@@ -4,13 +4,15 @@ import asyncio
 import logging #Блять что это???????????????????????????????????????????
 
 
-from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_secret
+from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_secret, get_inline
+from core.handlers.callback import select_macbook
 from core.filters.iscontact import IsTrueContact
 from core.handlers.contact import get_true_contact, get_fake_contact
 from core.settings import Setting
 from aiogram.filters import Command, CommandStart
 from aiogram import F
 from core.utils.commands import set_commands
+from core.utils.callbackdata import MacInfo
 
 
 
@@ -36,7 +38,11 @@ async def start():
 
 
     dp = Dispatcher()
+    #dp.callback_query.register(select_macbook, F.data.startswith('inline_'))
+    #dp.callback_query.register(select_macbook, MacInfo.filter())
+    dp.callback_query.register(select_macbook, MacInfo.filter(F.num == 1))
     dp.message.register(get_location, F.location)
+    dp.message.register(get_inline, Command(commands='inline'))
     dp.message.register(get_hello, F.text == 'Привет')
     dp.message.register(get_secret, F.text == 'Секрет')
     dp.message.register(get_true_contact, F.contact, IsTrueContact())
