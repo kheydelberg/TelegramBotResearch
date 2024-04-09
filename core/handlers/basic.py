@@ -8,7 +8,8 @@ from core.keyboards.inline import select_macbook, get_inline_keyboard
 async def get_inline(message: Message, bot: Bot):
     await message.answer('Hello, its inline buttons', reply_markup=get_inline_keyboard())
 
-async def get_start(message: Message, bot: Bot):
+async def get_start(message: Message, bot: Bot, counter: str):
+    await message.answer(f'Сообщение #{counter}')
     await bot.send_message(message.from_user.id, f"{message.from_user.first_name}, а ты знал, что <b>Это send_message</b> ")
     await message.answer(f"Это message.answer")
     await message.reply(f"Это message.reply")
