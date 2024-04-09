@@ -13,6 +13,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram import F
 from core.utils.commands import set_commands
 from core.utils.callbackdata import MacInfo
+from core.handlers.pay import order, pre_checkout_query, successful_payment
 
 
 
@@ -38,6 +39,9 @@ async def start():
 
 
     dp = Dispatcher()
+    dp.message.register(order, Command(commands='pay'))
+    dp.pre_checkout_query.register(pre_checkout_query)
+    dp.message.register(successful_payment, F.successful_payment)
     #dp.callback_query.register(select_macbook, F.data.startswith('inline_'))
     #dp.callback_query.register(select_macbook, MacInfo.filter())
     dp.callback_query.register(select_macbook, MacInfo.filter(F.num == 1))
