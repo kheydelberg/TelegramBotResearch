@@ -1,1 +1,13 @@
+<<<<<<< HEAD
 /venv
+=======
+\.vs
+/.vs
+.vs\TelegramBotResearch\FileContentIndex
+.vs
+
+.vs\VSWorkspaceState.json
+.vs\ProjectSettings.json
+.vs\slnx.sqlite
+.vs\TelegramBotResearch\v17\.wsuo
+>>>>>>> 90a511b4a9ba768c00f65975e2b6218021b325a6
