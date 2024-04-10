@@ -42,7 +42,7 @@ async def start():
 
     dp = Dispatcher()
     dp.message.middleware.register(CounterMiddleware())
-    dp.message.middleware.register(OfficeHoursMiddleware())
+    dp.update.middleware.register(OfficeHoursMiddleware())
     dp.message.register(order, Command(commands='pay'))
     dp.pre_checkout_query.register(pre_checkout_query)
     dp.message.register(successful_payment, F.successful_payment)
