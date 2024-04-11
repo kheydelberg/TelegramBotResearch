@@ -1,28 +1,71 @@
-from aiogram import Bot, Dispatcher
-import asyncio
-from aiogram.types import Message
+# Импорт необходимых модулей из библиотеки aiogram
+from aiogram import Bot, Dispatcher  # Импорт классов Bot и Dispatcher
+import asyncio  # Импорт модуля asyncio для работы с асинхронными задачами
+from aiogram.types import Message  # Импорт класса Message для работы с сообщениями
+from aiogram.filters import CommandStart  # Импорт фильтра для команды старта бота
+import logging  # Импорт модуля logging для ведения логов
+
+# Токен вашего бота
 token = '7183898339:AAFuMXY8XwiVHTjQy_P6I1sO8rpB32s10qE'
 
+# Функция для запуска бота
+async def start_bot(bot: Bot):
+    await bot.send_message(1147528020, text='Бот запущен')  # Отправка сообщения о запуске бота
 
+# Функция для остановки бота
+async def stop_bot(bot: Bot):
+    await bot.send_message(1147528020, text='Бот остановлен')  # Отправка сообщения об остановке бота
+
+"""
+1. send_message: Этот метод используется для отправки сообщения пользователю. 
+Вы указываете идентификатор чата (обычно идентификатор пользователя) и текст сообщения. 
+Это наиболее общий метод отправки сообщений.
+
+2. answer: Этот метод используется для отправки ответа на определенное сообщение. 
+Он автоматически адресует сообщение обратно в тот же чат, откуда пришло исходное сообщение. 
+Это удобно, когда вы хотите ответить на конкретное сообщение пользователя.
+
+3. reply: Этот метод также используется для отправки ответа на определенное сообщение, 
+но он добавляет некоторую дополнительную функциональность. 
+Например, он может использоваться для цитирования исходного сообщения, чтобы пользователь мог легко отследить контекст ответа.
+
+В общем, answer и reply используются для ответов на конкретные сообщения, 
+тогда как send_message используется для отправки сообщений без привязки к какому-либо конкретному сообщению.
+"""
+
+# Функция для обработки команды /start
 async def get_start(message: Message, bot: Bot):
-    await bot.send_message(message.from_user.id, f'Привет, дебил {message.from_user.first_name}, как твои дела')
-    await message.answer(f'Привет, дебил {message.from_user.first_name}, как твои дела')
-    await message.reply(f'Привет, дебил {message.from_user.first_name}, как твои дела')
-async def start():
-    bot = Bot(token=token)
+    # Отправка приветственного сообщения с использованием различных тегов форматирования
+    await bot.send_message(message.from_user.id, f'<b>Привет, дебил {message.from_user.first_name}, как твои дела</b>')
+    await message.answer(f'<s>Привет, дебил {message.from_user.first_name}, как твои дела</s>')  # Ответ с использованием тега <s>
+    await message.reply(f'<tg-spoiler>Привет, дебил {message.from_user.first_name}, как твои дела</tg-spoiler>')  # Ответ с использованием тега <tg-spoiler>
 
-    dp = Dispatcher()
-    dp.message.register(get_start)
+# Основная функция для запуска бота
+async def start():
+    # Настройка логгирования
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s - [%(levelname)s] - %(name)s - "
+                               "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
+                        )
+    bot = Bot(token=token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
+    """Вы обращаетесь к диспетчеру (Dispatcher) в боте в нескольких сценариях:
+    1. Регистрация обработчиков:
+    2. Инициализация состояний:
+    3. Запуск и остановка бота:
+    4. Маршрутизация событий:
+    Короче говоря, вы обращаетесь к диспетчеру в моменты инициализации и настройки бота, а также для обработки входящих запросов и управления его жизненным циклом.
+    """
+
+    dp = Dispatcher()  # Создание экземпляра класса Dispatcher
+    dp.message.register(get_start, CommandStart())  # Регистрация обработчика для команды /start
+    dp.startup.register(start_bot)  # Регистрация функции запуска бота
+    dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
     try:
-        await dp.start_polling(bot)
+        await dp.start_polling(bot)  # Запуск бота с использованием long polling
     finally:
-        await bot.session.close()
+        await bot.session.close()  # Закрытие сессии бота
 
-
-if __name__ == "__MMD_file__":
-    asyncio.run(start())
-
-
-
-
+# Проверка, что скрипт запускается как основной
+if __name__ == "__main__":
+    asyncio.run(start())  # Выполнение основной функции
