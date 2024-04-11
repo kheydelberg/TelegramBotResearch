@@ -1,20 +1,18 @@
-# Импорт необходимых модулей из библиотеки aiogram
-from aiogram import Bot, Dispatcher  # Импорт классов Bot и Dispatcher
-import asyncio  # Импорт модуля asyncio для работы с асинхронными задачами
-from aiogram.types import Message  # Импорт класса Message для работы с сообщениями
-from aiogram.filters import CommandStart  # Импорт фильтра для команды старта бота
-import logging  # Импорт модуля logging для ведения логов
-
-# Токен вашего бота
-token = '7183898339:AAFuMXY8XwiVHTjQy_P6I1sO8rpB32s10qE'
+# Импорт необходимых модулей
+from aiogram import Bot, Dispatcher 
+import asyncio  
+from aiogram.filters import CommandStart  
+import logging  
+from core.handlers.basic import get_start
+from core.settings import settings
 
 # Функция для запуска бота
 async def start_bot(bot: Bot):
-    await bot.send_message(1147528020, text='Бот запущен')  # Отправка сообщения о запуске бота
+    await bot.send_message(settings.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
 
 # Функция для остановки бота
 async def stop_bot(bot: Bot):
-    await bot.send_message(1147528020, text='Бот остановлен')  # Отправка сообщения об остановке бота
+    await bot.send_message(settings.bots.admin_id, text='Бот остановлен')  # Отправка сообщения об остановке бота
 
 """
 1. send_message: Этот метод используется для отправки сообщения пользователю. 
@@ -33,13 +31,6 @@ async def stop_bot(bot: Bot):
 тогда как send_message используется для отправки сообщений без привязки к какому-либо конкретному сообщению.
 """
 
-# Функция для обработки команды /start
-async def get_start(message: Message, bot: Bot):
-    # Отправка приветственного сообщения с использованием различных тегов форматирования
-    await bot.send_message(message.from_user.id, f'<b>Привет, дебил {message.from_user.first_name}, как твои дела</b>')
-    await message.answer(f'<s>Привет, дебил {message.from_user.first_name}, как твои дела</s>')  # Ответ с использованием тега <s>
-    await message.reply(f'<tg-spoiler>Привет, дебил {message.from_user.first_name}, как твои дела</tg-spoiler>')  # Ответ с использованием тега <tg-spoiler>
-
 # Основная функция для запуска бота
 async def start():
     # Настройка логгирования
@@ -47,7 +38,8 @@ async def start():
                         format="%(asctime)s - [%(levelname)s] - %(name)s - "
                                "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
                         )
-    bot = Bot(token=token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
+    
+    bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
     """Вы обращаетесь к диспетчеру (Dispatcher) в боте в нескольких сценариях:
     1. Регистрация обработчиков:
     2. Инициализация состояний:
