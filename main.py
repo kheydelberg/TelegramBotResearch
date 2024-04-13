@@ -1,3 +1,4 @@
+from sqlite3 import dbapi2
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 import asyncio
@@ -16,7 +17,8 @@ from core.utils.callbackdata import MacInfo
 from core.handlers.pay import order, pre_checkout_query, successful_payment, shipping_check
 from core.middlewares.countermiddleware import CounterMiddleware
 from core.middlewares.officehours import OfficeHoursMiddleware
-
+from core.handlers import form
+from core.utils.statesform import StepsForm
 
 
 
@@ -60,7 +62,10 @@ async def start():
     dp.message.register(get_start, Command(commands=['start', 'run']))  # CommandStart()
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
-
+    dp.message.register(form.get_form, Command(commands='form'))
+    dp.message.register(form.get_name, StepsForm.GET_NAME)
+    dp.message.register(form.get_last_name, StepsForm.GET_LAST_NAME)    
+    dp.message.register(form.get_age, StepsForm.GET_AGE)
 
 
     try:
