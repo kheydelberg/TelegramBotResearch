@@ -17,9 +17,12 @@ from core.utils.callbackdata import MacInfo
 from core.handlers.pay import order, pre_checkout_query, successful_payment, shipping_check
 from core.middlewares.countermiddleware import CounterMiddleware
 from core.middlewares.officehours import OfficeHoursMiddleware
+from core.middlewares.apschedulermiddleware import SchedulerMiddleware
 from core.handlers import form
 from core.utils.statesform import StepsForm
-
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from core.handlers import apsched
+from datetime import datetime, timedelta
 
 
 async def start_bot(bot: Bot):
@@ -43,8 +46,18 @@ async def start():
 
 
     dp = Dispatcher()
+    
+    scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
+    scheduler.add_job(apsched.send_message_time, trigger='date', run_date= datetime.now() + timedelta(seconds=10), kwargs={'bot': bot})
+    scheduler.add_job(apsched.send_message_cron, trigger='cron', hour=datetime.now().hour, minute= datetime.now().minute + 1, start_date=datetime.now(), kwargs={'bot': bot})
+    scheduler.add_job(apsched.send_message_interval, trigger='interval', seconds=60, kwargs={'bot':bot})
+    scheduler.start()
+
+
     dp.message.middleware.register(CounterMiddleware())
     dp.update.middleware.register(OfficeHoursMiddleware())
+    dp.update.middleware.register(SchedulerMiddleware(scheduler))
+
     dp.message.register(order, Command(commands='pay'))
     dp.pre_checkout_query.register(pre_checkout_query)
     dp.message.register(successful_payment, F.successful_payment)
