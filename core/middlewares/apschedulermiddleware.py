@@ -14,3 +14,4 @@ class SchedulerMiddleware(BaseMiddleware):
                        ) -> Any:
         data['apscheduler'] = self.scheduler
         return await handler(event, data)
+    
