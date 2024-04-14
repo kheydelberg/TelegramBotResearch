@@ -1,9 +1,8 @@
-from sqlite3 import dbapi2
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 import asyncio
 import logging #Блять что это???????????????????????????????????????????
-
+import aiomysql
 
 from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_secret, get_inline
 from core.handlers.callback import select_macbook
@@ -18,6 +17,7 @@ from core.handlers.pay import order, pre_checkout_query, successful_payment, shi
 from core.middlewares.countermiddleware import CounterMiddleware
 from core.middlewares.officehours import OfficeHoursMiddleware
 from core.middlewares.apschedulermiddleware import SchedulerMiddleware
+from core.middlewares.dbmiddleware import DBSession
 from core.handlers import form
 from core.utils.statesform import StepsForm
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -36,6 +36,15 @@ async def stop_bot(bot: Bot):
                            f"Бот остановлен!!!")
     print("Бот остановлен!")
 
+async def create_pool():
+    return await aiomysql.create_pool(
+        host = 'localhost', 
+        port = 3306, 
+        user='root',
+        password='Basek@319_',
+        db='research_bot',
+        autocommit=True,
+        )
 
 async def start():
     logging.basicConfig(level=logging.INFO,
@@ -43,6 +52,8 @@ async def start():
                         "(%(filename)s.%(funcName)s(%(lineno)d) - %(message)s")
 
     bot = Bot(token=Setting.bots.bot_token, parse_mode='HTML')
+
+    pool_connect = await create_pool()
 
 
     dp = Dispatcher()
@@ -57,6 +68,7 @@ async def start():
     dp.message.middleware.register(CounterMiddleware())
     dp.update.middleware.register(OfficeHoursMiddleware())
     dp.update.middleware.register(SchedulerMiddleware(scheduler))
+    dp.update.middleware.register(DBSession(pool_connect))
 
     dp.message.register(order, Command(commands='pay'))
     dp.pre_checkout_query.register(pre_checkout_query)

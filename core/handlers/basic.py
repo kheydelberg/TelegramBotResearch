@@ -3,12 +3,15 @@ from aiogram.types import Message
 import json
 from core.keyboards.reply import reply_keyboard, loc_tel_poll_keyboard, get_reply_keyboard
 from core.keyboards.inline import select_macbook, get_inline_keyboard
+from core.utils.dbconnect import Request
 
 
 async def get_inline(message: Message, bot: Bot):
     await message.answer('Hello, its inline buttons', reply_markup=get_inline_keyboard())
 
-async def get_start(message: Message, bot: Bot, counter: str):
+async def get_start(message: Message, bot: Bot, counter: str, request: Request):
+    await request.create_feedback(message.from_user.id)
+
     await message.answer(f'Сообщение #{counter}')
     await bot.send_message(message.from_user.id, f"{message.from_user.first_name}, а ты знал, что <b>Это send_message</b> ")
     await message.answer(f"Это message.answer")
