@@ -31,4 +31,4 @@ async def get_age(message: Message, bot: Bot, state: FSMContext, apscheduler: As
     name = context_data.get('name')
     await message.answer(f'Ur name: {name}')
     await state.clear()
-    apscheduler.add_job(send_message_middleware, trigger='date', run_date=datetime.now() + timedelta(seconds=13), kwargs={'bot':bot, 'chat_id':message.from_user.id} )
+    apscheduler.add_job(send_message_middleware, trigger='date', run_date=datetime.now() + timedelta(seconds=13), kwargs={'chat_id':message.from_user.id} )

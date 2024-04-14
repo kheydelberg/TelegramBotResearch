@@ -4,6 +4,10 @@ import asyncio
 import logging #Блять что это???????????????????????????????????????????
 import aiomysql
 
+from aiogram.fsm.storage.redis import RedisStorage
+from apscheduler.jobstores.redis import RedisJobStore
+from apscheduler_di import ContextSchedulerDecorator
+
 from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_secret, get_inline
 from core.handlers.callback import select_macbook
 from core.filters.iscontact import IsTrueContact
@@ -55,13 +59,23 @@ async def start():
 
     pool_connect = await create_pool()
 
+    storage = RedisStorage.from_url('redis://localhost:6379/0')
 
-    dp = Dispatcher()
+    dp = Dispatcher(storage=storage)
     
-    scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
-    scheduler.add_job(apsched.send_message_time, trigger='date', run_date= datetime.now() + timedelta(seconds=10), kwargs={'bot': bot})
-    scheduler.add_job(apsched.send_message_cron, trigger='cron', hour=datetime.now().hour, minute= datetime.now().minute + 1, start_date=datetime.now(), kwargs={'bot': bot})
-    scheduler.add_job(apsched.send_message_interval, trigger='interval', seconds=60, kwargs={'bot':bot})
+    jobstores = {
+        'default': RedisJobStore(jobs_key='dispatched_trips_jobs',
+                                 run_times_key='dispatched_trips_running',
+                                 host='localhost',
+                                 db=2,
+                                 port=6379)
+        }
+    
+    scheduler = ContextSchedulerDecorator(AsyncIOScheduler(timezone="Europe/Moscow", jobstores=jobstores))
+    scheduler.ctx.add_instance(bot, declared_class=Bot)
+    scheduler.add_job(apsched.send_message_time, trigger='date', run_date= datetime.now() + timedelta(seconds=10))
+    scheduler.add_job(apsched.send_message_cron, trigger='cron', hour=datetime.now().hour, minute= datetime.now().minute + 1, start_date=datetime.now())
+    scheduler.add_job(apsched.send_message_interval, trigger='interval', seconds=60)
     scheduler.start()
 
 
