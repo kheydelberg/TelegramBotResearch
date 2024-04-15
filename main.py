@@ -14,6 +14,8 @@ from core.settings import settings
 import json
 from typing import Dict
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from core.utils.commands import set_commands
+from core.middlewares.countermiddleware import CounterMiddleware
 
 """
 ВТОРОЙ УРОК - магические фильтры
@@ -21,6 +23,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 # Функция для запуска бота
 async def start_bot(bot: Bot):
+    await set_commands(bot)
     await bot.send_message(settings.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
 
 # Функция для остановки бота
@@ -122,6 +125,7 @@ async def start():
     """
 
     dp = Dispatcher()  # Создание экземпляра класса Dispatcher
+    dp.message.middleware.register(CounterMiddleware())
     dp.message.register(get_start, CommandStart())  # Регистрация обработчика для команды /start
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота

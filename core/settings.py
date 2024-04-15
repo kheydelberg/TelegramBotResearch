@@ -18,9 +18,9 @@ def get_settings(path: str):
 
     return Settings(
         bots=Bots(
-            bot_token=env.str("TOKEN"),
+            bot_token=env.str("TOKEN").strip(),
             admin_id=env.int("ADMIN_ID")
         )
     )
-settings = get_settings('D:\РЭУ\Проекты\TelegramBotResearch\core\input')
+settings = get_settings('D:\РЭУ\Проекты\TelegramBotResearch\core\input.env')
 print(settings)
