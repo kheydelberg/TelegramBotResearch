@@ -16,4 +16,4 @@ async def set_commands(bot: Bot):
             description='Сбросить'
         )
     ]
-    await bot.set_my_commands(commands, BotCommandScopeDefault()) # скоуп может быть разным для админов в том числе
+    await bot.set_my_commands(commands, BotCommandScopeDefault()) # скоуп может быть разным только для админов в том числе

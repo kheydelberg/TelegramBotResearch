@@ -16,6 +16,7 @@ from typing import Dict
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from core.utils.commands import set_commands
 from core.middlewares.countermiddleware import CounterMiddleware
+from core.middlewares.officehours import OfficeHoursMiddleware
 
 """
 ВТОРОЙ УРОК - магические фильтры
@@ -126,6 +127,7 @@ async def start():
 
     dp = Dispatcher()  # Создание экземпляра класса Dispatcher
     dp.message.middleware.register(CounterMiddleware())
+    dp.update.middleware.register(OfficeHoursMiddleware())
     dp.message.register(get_start, CommandStart())  # Регистрация обработчика для команды /start
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
