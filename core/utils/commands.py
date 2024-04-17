@@ -14,6 +14,10 @@ async def set_commands(bot: Bot):
         BotCommand(
             command='cancel',
             description='Сбросить'
+        ),
+        BotCommand (
+            command = 'form',
+            description = 'Начать опрос'
         )
     ]
     await bot.set_my_commands(commands, BotCommandScopeDefault()) # скоуп может быть разным только для админов в том числе

@@ -5,7 +5,7 @@
 # Импорт необходимых модулей
 from aiogram import Bot, Dispatcher, F
 import asyncio  
-from aiogram.filters import CommandStart 
+from aiogram.filters import CommandStart, Command 
 import logging
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ContentType
@@ -17,6 +17,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from core.utils.commands import set_commands
 from core.middlewares.countermiddleware import CounterMiddleware
 from core.middlewares.officehours import OfficeHoursMiddleware
+from core.handlers import form
+from core.utils.statesform import StepsForm
 
 """
 ВТОРОЙ УРОК - магические фильтры
@@ -131,6 +133,10 @@ async def start():
     dp.message.register(get_start, CommandStart())  # Регистрация обработчика для команды /start
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
+    dp.message.register(form.get_form, Command(commands='form'))
+    dp.message.register(form.get_name, StepsForm.GET_NAME)
+    dp.message.register(form.get_last_name, StepsForm.GET_LAST_NAME)
+    dp.message.register(form.get_age, StepsForm.GET_AGE)
     dp.callback_query.register(get_button_1, F.data == 'button_1')
     dp.callback_query.register(get_button_2, F.data == 'button_2')
     dp.callback_query.register(call_data)
