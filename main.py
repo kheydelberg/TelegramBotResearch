@@ -1,8 +1,11 @@
 from aiogram import Bot, Dispatcher
-from core.heandlers.basic import get_start
+# from aiogram.types import ContentType
+from core.handlers.basic import get_start
 import asyncio
 import logging
 from core.settings import settings
+from core.utils.commands import set_commands
+from aiogram.filters import Command
 
 
 async def start():
@@ -13,8 +16,10 @@ async def start():
 
     bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')
 
+    await set_commands(bot)
+
     dp = Dispatcher()
-    dp.message.register(get_start)
+    dp.message.register(get_start, Command(commands=['start']))
     try:
         await dp.start_polling(bot)
     finally:
