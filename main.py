@@ -20,6 +20,7 @@ from core.middlewares.officehours import OfficeHoursMiddleware
 from core.handlers import form
 from core.utils.statesform import StepsForm
 
+
 """
 ВТОРОЙ УРОК - магические фильтры
 """
