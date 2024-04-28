@@ -1,15 +1,21 @@
 from aiogram import Bot
 from aiogram.types import Message
+from core.keyboards.reply import reply_keyboard, loc_tel_poll_keyboard
 
 
 async def get_start(message: Message, bot: Bot):
-    await bot.send_message(
-        message.from_user.id, f'Привет, <b>{message.from_user.first_name}</b>!'
-        )
-    await message.answer(f'Привет, <u>{message.from_user.first_name}</u>!')
-    await message.reply(
-        f'Привет, <tg-spoiler>{message.from_user.first_name}</tg-spoiler>!'
-        )
+    await message.answer(f'Привет, <b>{message.from_user.first_name}</b>!',
+                         reply_markup=loc_tel_poll_keyboard)
+
+
+async def get_location(message: Message, bot: Bot):
+    await message.answer(f'Ты отправил геолокацию\r\a'
+                         f'{message.location.latitude}\r\n{message.location.longitude}')
+
+
+async def get_contact(message: Message, bot: Bot):
+    await message.answer(f'Ты отправил телефон.\r\a'
+                         f'{message.contact}')
 
 
 async def get_photo(message: Message, bot: Bot):
