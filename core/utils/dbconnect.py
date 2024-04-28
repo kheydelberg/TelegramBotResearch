@@ -9,6 +9,21 @@ class Request:
             await cur.execute(data)
             return await cur.fetchall()
 
+    async def author_search(self, author: str):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            query = f"SELECT name, description, link, authors FROM Links WHERE authors LIKE '%{author}%'"
+            await cur.execute(query)
+            
+    async def name_search(self, name: str):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            query = f"SELECT name, description, link, authors FROM Links WHERE name LIKE '%{name}%'"
+            await cur.execute(query)
+            
+    async def category_search(self, category: str):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            query = f"SELECT name, description, link, authors FROM Links WHERE categories LIKE '%{category}%'"
+            await cur.execute(query)
+
     async def create_feedback(self, idTelegram, Type: str, Text: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"INSERT INTO feedback (idTelegram, Type, Text, IsDone)" \
@@ -38,10 +53,10 @@ class Request:
             await cur.execute(query)
             return await cur.fetchall()
         
-    async def create_link(self, categories, description, link, likes):
+    async def create_link(self, categories, name, authors, description, link, likes):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"INSERT INTO Links (Categories, Description, Link, Likes)" \
-                f"VALUES ({categories}, {description}, {link}, {likes}) ON DUPLICATE KEY UPDATE;"
+            query = f"INSERT INTO Links (Categories, Description, Link, Likes, name, authors)" \
+                f"VALUES ({categories}, {description}, {link}, {likes}, {name}, {authors}) ON DUPLICATE KEY UPDATE;"
             await cur.execute(query)
             
     async def read_links(self, num: int):
