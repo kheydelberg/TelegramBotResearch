@@ -46,7 +46,7 @@ async def create_pool():
         port = 3306, 
         user='root',
         password='Basek@319_',
-        db='research_bot',
+        db='ResearchBot',
         autocommit=True,
         )
 
