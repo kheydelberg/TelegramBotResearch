@@ -1,19 +1,13 @@
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher
 import asyncio  
 from aiogram.filters import CommandStart, Command 
 import logging
-from aiogram.types import Message, CallbackQuery
-from aiogram.enums import ContentType
 from core.handlers.basic import get_start
 from core.settings import settings
-import json
-from typing import Dict
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 from core.utils.commands import set_commands
-from core.middlewares.countermiddleware import CounterMiddleware
-from core.middlewares.officehours import OfficeHoursMiddleware
 from core.handlers import add_material
 from core.utils.statesform import StepsForm
+
 
 
 # Функция для запуска бота
@@ -47,6 +41,16 @@ async def start():
     dp.message.register(add_material.get_link, StepsForm.GET_LINK)
     dp.message.register(add_material.get_name, StepsForm.GET_NAME)
     dp.message.register(add_material.get_author, StepsForm.GET_AUTHOR)
+    dp.message.register(add_material.get_all, StepsForm.GET_ALL)
+    dp.message.register(add_material.validate_material, StepsForm.VALIDATE_MATERIAL)
+
+    dp.callback_query.register(add_material.check_category, StepsForm.CHECK_CATEGORY)
+    dp.callback_query.register(add_material.check_description, StepsForm.CHECK_DESCRIPTION)
+    dp.callback_query.register(add_material.check_link, StepsForm.CHECK_LINK)
+    dp.callback_query.register(add_material.check_name, StepsForm.CHECK_NAME)
+    dp.callback_query.register(add_material.check_author, StepsForm.CHECK_AUTHOR)
+
+
 
     try:
         await dp.start_polling(bot)  # Запуск бота с использованием long polling

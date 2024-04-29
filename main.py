@@ -70,12 +70,7 @@ async def get_animation(message: Message):
 async def get_admin_message(message: Message):
     await message.answer('Мне написал один из админов!')
 
-def get_inline_keyboard():
-    keyboard_builder = InlineKeyboardBuilder()
-    keyboard_builder.button(text='Кнопка хихи', callback_data='button_1')
-    keyboard_builder.button(text='Кнопка хаха', callback_data='button_2')
-    keyboard_builder.adjust(1)
-    return keyboard_builder.as_markup()
+
 
 async def get_keyboard(message: Message):
     await message.answer('Вот клавиатура', reply_markup=get_inline_keyboard())
