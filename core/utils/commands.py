@@ -15,6 +15,10 @@ async def set_commands(bot: Bot):
         BotCommand(
             command='send_feedback',
             description='Отправить отзыв'
+        ),
+        BotCommand(
+            command='inline',
+            description='Показать инлайн кнопки'
         )
     ]
     await bot.set_my_commands(commands, BotCommandScopeDefault())
