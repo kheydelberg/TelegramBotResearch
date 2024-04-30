@@ -13,12 +13,12 @@ async def set_commands(bot: Bot):
             description='Помощь'
         ),
         BotCommand(
-            command='send_feedback',
-            description='Отправить отзыв'
-        ),
-        BotCommand(
             command='inline',
             description='Показать инлайн кнопки'
+        ),
+        BotCommand(
+            command='subject',
+            description='Выбрать предмет'
         )
     ]
     await bot.set_my_commands(commands, BotCommandScopeDefault())
