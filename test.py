@@ -7,6 +7,10 @@ from core.settings import settings
 from core.utils.commands import set_commands
 from core.handlers import add_material
 from core.handlers import delete_material
+from core.handlers import view_db
+from core.handlers import view_feedback
+from core.handlers import view_raw_feedback
+from core.handlers import view_statistic
 from core.utils.statesform import StepsForm
 
 
@@ -58,6 +62,33 @@ async def start():
 
     dp.callback_query.register(delete_material.check_id, StepsForm.CHECK_ID)
 
+    dp.message.register(view_db.start_show_db, Command(commands='show_materials'))
+    dp.message.register(view_db.get_number_str, StepsForm.GET_NUMBER_DB)
+    dp.message.register(view_db.validate_number, StepsForm.VALIDATE_NUMBER_DB)
+    dp.message.register(view_db.show_db, StepsForm.SHOW_DB)
+
+    dp.callback_query.register(view_db.check_number_str, StepsForm.CHECK_NUMBER_DB)
+
+    dp.message.register(view_feedback.start_show_feedbacks, Command(commands='show_feedbacks'))
+    dp.message.register(view_feedback.get_number_str, StepsForm.GET_NUMBER_FB)
+    dp.message.register(view_feedback.validate_number, StepsForm.VALIDATE_NUMBER_FB)
+    dp.message.register(view_feedback.show_feedbacks, StepsForm.SHOW_FEEDBACKS)
+
+    dp.callback_query.register(view_feedback.check_number_str, StepsForm.CHECK_NUMBER_FB)
+
+    dp.message.register(view_raw_feedback.start_show_raw_feedbacks, Command(commands='show_raw_feedbacks'))
+    dp.message.register(view_raw_feedback.get_number_str, StepsForm.GET_NUMBER_RFB)
+    dp.message.register(view_raw_feedback.validate_number, StepsForm.VALIDATE_NUMBER_RFB)
+    dp.message.register(view_raw_feedback.show_raw_feedbacks, StepsForm.SHOW_RAW_FEEDBACKS)
+
+    dp.callback_query.register(view_raw_feedback.check_number_str, StepsForm.CHECK_NUMBER_RFB)
+
+    dp.message.register(view_statistic.start_show_statistic, Command(commands='show_statistic'))
+    dp.message.register(view_statistic.get_number_str, StepsForm.GET_NUMBER_ST)
+    dp.message.register(view_statistic.validate_number, StepsForm.VALIDATE_NUMBER_ST)
+    dp.message.register(view_statistic.show_statistic, StepsForm.SHOW_STATISTIC)
+
+    dp.callback_query.register(view_statistic.check_number_str, StepsForm.CHECK_NUMBER_ST)
 
 
     try:

@@ -19,14 +19,14 @@ async def get_id(message: Message, state: FSMContext):
 async def check_id(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer(f'Отлично, Вы подтвердили ID')
+       await call.message.answer(f'Отлично, Вы подтвердили ID, подождите немного и материал будет удален, хорошо?')
        await state.set_state(StepsForm.DELETE_MATERIAL)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно ID")
         await state.set_state(StepsForm.GET_ID)
 
 async def delete_material(message: Message, bot: Bot, state: FSMContext):
-    await bot.send_message(message.from_user.id, f'Обучающий материал с ID был удален')
     # функция, которая удаляет материал
+    await bot.send_message(message.from_user.id, f'Обучающий материал был удален')
     await state.clear()
     

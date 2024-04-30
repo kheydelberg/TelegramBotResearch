@@ -24,11 +24,11 @@ async def set_commands(bot: Bot):
             description = 'Удалить обучающий материал по id'
         ),
          BotCommand (
-           command = 'show_feedback',
+           command = 'show_feedbacks',
            description = 'Посмотреть все фидбеки'
         ),
          BotCommand (
-           command = 'show_raw_feedback',
+           command = 'show_raw_feedbacks',
            description = 'Посмотреть необработанные фидбеки'
         ),
          BotCommand (
@@ -36,7 +36,7 @@ async def set_commands(bot: Bot):
            description = 'Поменять статус фидбека'
         ),
          BotCommand (
-           command = 'show_satisctics',
+           command = 'show_statistic',
            description = 'Посмотреть статистику'
         ),
          BotCommand (

@@ -30,3 +30,35 @@ class StepsForm(StatesGroup):
     GET_ID = State()
 
     CHECK_ID = State()
+
+    GET_NUMBER_DB = State()
+
+    CHECK_NUMBER_DB = State()
+
+    VALIDATE_NUMBER_DB = State()
+
+    GET_NUMBER_FB = State()
+
+    CHECK_NUMBER_FB = State()
+
+    VALIDATE_NUMBER_FB = State()
+
+    SHOW_DB = State()
+
+    SHOW_FEEDBACKS = State()
+
+    GET_NUMBER_RFB = State()
+
+    CHECK_NUMBER_RFB = State()
+
+    VALIDATE_NUMBER_RFB = State()
+
+    SHOW_RAW_FEEDBACKS = State()
+
+    GET_NUMBER_ST = State()
+
+    CHECK_NUMBER_ST = State()
+
+    VALIDATE_NUMBER_ST = State()
+
+    SHOW_STATISTIC = State()

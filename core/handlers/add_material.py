@@ -1,4 +1,5 @@
 from aiogram.types import Message
+from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from core.keyboards.inline_keyboard import get_inline_keyboard
 from core.utils.statesform import StepsForm
@@ -17,7 +18,7 @@ async def get_category(message: Message, state: FSMContext):
 async def check_category(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили категорию. Введи еще")
+       await call.message.answer("Отлично, Вы подтвердили категорию. Введите короткое описание материала")
        await state.set_state(StepsForm.GET_DESCRIPTION)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно категорию")
@@ -31,7 +32,7 @@ async def get_description(message: Message, state: FSMContext):
 async def check_description(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили. Введи еще")
+       await call.message.answer("Отлично, Вы подтвердили. Введитие ссылку на материал")
        await state.set_state(StepsForm.GET_LINK)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
@@ -45,7 +46,7 @@ async def get_link(message: Message, state: FSMContext):
 async def check_link(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили. Введи еще")
+       await call.message.answer("Отлично, Вы подтвердили. Введите название материала")
        await state.set_state(StepsForm.GET_NAME)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
@@ -59,7 +60,7 @@ async def get_name(message: Message, state: FSMContext):
 async def check_name(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили. Введи еще")
+       await call.message.answer("Отлично, Вы подтвердили. Введите автора материала в формате Ф. И. Отчество")
        await state.set_state(StepsForm.GET_AUTHOR)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
@@ -73,34 +74,38 @@ async def get_author(message: Message, state: FSMContext):
 async def check_author(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили")
+       await call.message.answer("Отлично, Вы подтвердили, подождите немного и материал будет отправлен на валидацию, хорошо?")
        await state.set_state(StepsForm.GET_ALL)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
         await state.set_state(StepsForm.GET_AUTHOR)  
 
-async def get_all(message: Message, state: FSMContext):
+async def get_all(message: Message, bot: Bot,  state: FSMContext):
     context_data = await state.get_data()
-    await message.answer(f'Сохраненные данные в машине состояний:\r\n{str(context_data)}')
+    await bot.send_message(message.from_user.id, f'Сохраненные данные в машине состояний:\r\n{str(context_data)}, данные отправлены на валидацию, подождите немного и материал будет добавлен, хорошо?')
     category = context_data.get('category')
     description = context_data.get('description')
     link = context_data.get('link')
     name = context_data.get('name')
     author = context_data.get('author')
+    await state.set_state(StepsForm.VALIDATE_MATERIAL)
+
+    """
     data_user = f'Введенные данные\r\n' \
     f'Категория {category}\r\n' \
     f'Описание {description}\r\n' \
     f'Ссылка {link}\r\n' \
     f'Название {name}\r\n' \
     f'Атвор {author}'
-    await message.answer('Данные отправлены на валидацию')
+    await bot.send_message(message.from_user.id, f'данные отправлены на валидацию, подождите немного и материал будет добавлен, хорошо?')
     await state.set_state(StepsForm.VALIDATE_MATERIAL)
     await message.answer(data_user)
+    """
     #await state.clear()
 
-async def validate_material(message: Message, state: FSMContext):
+async def validate_material(message: Message, bot: Bot, state: FSMContext):
     # функция Жени
     await state.clear()
-    await message.answer('лол провалидировали типо')
+    await bot.send_message(message.from_user.id, f'данные типо провалидированы')
 
     
