@@ -6,6 +6,7 @@ from core.handlers.basic import get_start
 from core.settings import settings
 from core.utils.commands import set_commands
 from core.handlers import add_material
+from core.handlers import delete_material
 from core.utils.statesform import StepsForm
 
 
@@ -35,6 +36,7 @@ async def start():
     dp.message.register(get_start, CommandStart())  # Регистрация обработчика для команды /start
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
+
     dp.message.register(add_material.get_material, Command(commands='add_material'))
     dp.message.register(add_material.get_category, StepsForm.GET_CATEGORY)
     dp.message.register(add_material.get_description, StepsForm.GET_DESCRIPTION)
@@ -44,11 +46,17 @@ async def start():
     dp.message.register(add_material.get_all, StepsForm.GET_ALL)
     dp.message.register(add_material.validate_material, StepsForm.VALIDATE_MATERIAL)
 
+    dp.message.register(delete_material.show_db_to_delete, Command(commands='delete_material_id'))
+    dp.message.register(delete_material.get_id, StepsForm.GET_ID)
+    dp.message.register(delete_material.delete_material, StepsForm.DELETE_MATERIAL)
+
     dp.callback_query.register(add_material.check_category, StepsForm.CHECK_CATEGORY)
     dp.callback_query.register(add_material.check_description, StepsForm.CHECK_DESCRIPTION)
     dp.callback_query.register(add_material.check_link, StepsForm.CHECK_LINK)
     dp.callback_query.register(add_material.check_name, StepsForm.CHECK_NAME)
     dp.callback_query.register(add_material.check_author, StepsForm.CHECK_AUTHOR)
+
+    dp.callback_query.register(delete_material.check_id, StepsForm.CHECK_ID)
 
 
 
