@@ -10,7 +10,7 @@ from aiogram.filters import Command
 # from core.handlers.basic import get_location
 from core.handlers.basic import get_inline
 # from core.handlers.basic import get_photo
-from core.handlers.callback import get_contact
+from core.handlers.callback import get_C_plusplus, get_C_sharp, get_back_math, get_back_prog, get_contact, get_diffur, get_discra, get_git, get_java, get_linal, get_matan, get_python, get_twims
 from core.handlers.callback import get_geo
 from core.handlers.callback import get_math, get_prog
 
@@ -32,6 +32,18 @@ async def start():
     dp.callback_query.register(get_contact, F.data == 'contact')
     dp.callback_query.register(get_prog, F.data == 'prog')
     dp.callback_query.register(get_math, F.data == 'math')
+    dp.callback_query.register(get_matan, F.data == 'matan')
+    dp.callback_query.register(get_linal, F.data == 'linal')
+    dp.callback_query.register(get_discra, F.data == 'discra')
+    dp.callback_query.register(get_git, F.data == 'git')
+    dp.callback_query.register(get_diffur, F.data == 'diffur')
+    dp.callback_query.register(get_twims, F.data == 'twims')
+    dp.callback_query.register(get_C_plusplus, F.data == 'C++')
+    dp.callback_query.register(get_C_sharp, F.data == 'C#')
+    dp.callback_query.register(get_python, F.data == 'python')
+    dp.callback_query.register(get_java, F.data == 'java')
+    dp.callback_query.register(get_back_math, F.data == 'back_math')
+    dp.callback_query.register(get_back_prog, F.data == 'back_prog')
     dp.message.register(get_choose_subject, Command(commands='subject'))
     dp.message.register(get_inline, Command(commands='inline'))
     dp.message.register(get_start, Command(commands=['start', 'run']))

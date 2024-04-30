@@ -46,6 +46,7 @@ def get_category_of_math():
     keyboard_builder.button(text='Геометрия и топологи', callback_data='git')
     keyboard_builder.button(text='Дифференциальные уравнения', callback_data='diffur')
     keyboard_builder.button(text='Теория вероятности и мат. статистика', callback_data='twims')
+    keyboard_builder.button(text='Назад', callback_data='back_math')
 
     keyboard_builder.adjust(1)
 
@@ -57,6 +58,7 @@ def get_category_of_prog():
     keyboard_builder.button(text='C#', callback_data='C#')
     keyboard_builder.button(text='Python', callback_data='python')
     keyboard_builder.button(text='Java', callback_data='java')
+    keyboard_builder.button(text='Назад', callback_data='back_prog')
 
     keyboard_builder.adjust(2, 2)
 
