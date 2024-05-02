@@ -1,3 +1,4 @@
+import codecs
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 import asyncio
@@ -8,7 +9,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler_di import ContextSchedulerDecorator
 
-from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_secret, get_inline
+from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_inline, test
 from core.handlers.callback import select_macbook
 from core.filters.iscontact import IsTrueContact
 from core.handlers.contact import get_true_contact, get_fake_contact
@@ -34,6 +35,7 @@ async def start_bot(bot: Bot):
     await bot.send_message(Setting.bots.admin_id,
                            f"Бот запущен!!!")
     print('Бот запущен!!!')
+    
 
 async def stop_bot(bot: Bot):
     await bot.send_message(Setting.bots.admin_id,
@@ -41,14 +43,36 @@ async def stop_bot(bot: Bot):
     print("Бот остановлен!")
 
 async def create_pool():
-    return await aiomysql.create_pool(
-        host = 'localhost', 
-        port = 3306, 
-        user='root',
-        password='Basek@319_',
-        db='ResearchBot',
-        autocommit=True,
-        )
+    try:
+        return await aiomysql.create_pool(
+            host = 'localhost', 
+            port = 3306, 
+            user='root',
+            password='Basek@319_',
+            db='ResearchBot',
+            autocommit=True,
+            )
+    except:
+        pool = await aiomysql.create_pool(
+            host = 'localhost', 
+            port = 3306, 
+            user='root',
+            password='Basek@319_',
+            db='mydb',
+            autocommit=True,
+            )
+        async with pool.acquire() as connect:
+            async with connect.cursor(aiomysql.DictCursor) as cur:
+                temp = 'CREATE SCHEMA `researchbot`;'
+                await cur.execute(temp)
+        return await aiomysql.create_pool(
+            host = 'localhost', 
+            port = 3306, 
+            user='root',
+            password='Basek@319_',
+            db='ResearchBot',
+            autocommit=True,
+            )
 
 async def start():
     logging.basicConfig(level=logging.INFO,
@@ -73,15 +97,15 @@ async def start():
     
     scheduler = ContextSchedulerDecorator(AsyncIOScheduler(timezone="Europe/Moscow", jobstores=jobstores))
     scheduler.ctx.add_instance(bot, declared_class=Bot)
-    scheduler.add_job(apsched.send_message_time, trigger='date', run_date= datetime.now() + timedelta(seconds=10))
-    scheduler.add_job(apsched.send_message_cron, trigger='cron', hour=datetime.now().hour, minute= datetime.now().minute + 1, start_date=datetime.now())
-    scheduler.add_job(apsched.send_message_interval, trigger='interval', seconds=60)
-    scheduler.start()
+    # scheduler.add_job(apsched.send_message_time, trigger='date', run_date= datetime.now() + timedelta(seconds=10))
+    # scheduler.add_job(apsched.send_message_cron, trigger='cron', hour=datetime.now().hour, minute= datetime.now().minute + 1, start_date=datetime.now())
+    # scheduler.add_job(apsched.send_message_interval, trigger='interval', seconds=60)
+    # scheduler.start()
 
 
-    dp.message.middleware.register(CounterMiddleware())
-    dp.update.middleware.register(OfficeHoursMiddleware())
-    dp.update.middleware.register(SchedulerMiddleware(scheduler))
+    # dp.message.middleware.register(CounterMiddleware())
+    # dp.update.middleware.register(OfficeHoursMiddleware())
+    # dp.update.middleware.register(SchedulerMiddleware(scheduler))
     dp.update.middleware.register(DBSession(pool_connect))
 
     dp.message.register(order, Command(commands='pay'))
@@ -91,10 +115,8 @@ async def start():
     #dp.callback_query.register(select_macbook, F.data.startswith('inline_'))
     #dp.callback_query.register(select_macbook, MacInfo.filter())
     dp.callback_query.register(select_macbook, MacInfo.filter(F.num == 1))
-    dp.message.register(get_location, F.location)
     dp.message.register(get_inline, Command(commands='inline'))
     dp.message.register(get_hello, F.text == 'Привет')
-    dp.message.register(get_secret, F.text == 'Секрет')
     dp.message.register(get_true_contact, F.contact, IsTrueContact())
     dp.message.register(get_fake_contact, F.contact)
     dp.message.register(get_photo, F.photo)
@@ -106,6 +128,8 @@ async def start():
     dp.message.register(form.get_last_name, StepsForm.GET_LAST_NAME)    
     dp.message.register(form.get_age, StepsForm.GET_AGE)
 
+    dp.message.register(test, Command(commands='test'))
+    
 
     try:
         await dp.start_polling(bot)

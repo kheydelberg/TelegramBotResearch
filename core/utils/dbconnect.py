@@ -1,4 +1,7 @@
+import codecs
+import os
 import aiomysql
+from core.settings import Setting
 
 class Request:
     def __init__(self, connector: aiomysql.pool.Pool):
@@ -13,26 +16,36 @@ class Request:
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"SELECT name, description, link, authors FROM Links WHERE authors LIKE '%{author}%'"
             await cur.execute(query)
+            return await cur.fetchall()
             
     async def name_search(self, name: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"SELECT name, description, link, authors FROM Links WHERE name LIKE '%{name}%'"
             await cur.execute(query)
+            return await cur.fetchall()
             
     async def category_search(self, category: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"SELECT name, description, link, authors FROM Links WHERE categories LIKE '%{category}%'"
             await cur.execute(query)
+            return await cur.fetchall()
 
     async def create_feedback(self, idTelegram, Type: str, Text: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"INSERT INTO feedback (idTelegram, Type, Text, IsDone)" \
                 f"VALUES ({idTelegram}, {Type}, {Text}, false) ON DUPLICATE KEY UPDATE;"
             await cur.execute(query)
+            return await cur.fetchall()
             
-    async def read_feedback(self, num: int):
+    async def read_all_feedback(self, num: int):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"SELECT * FROM feedback FIRST {num}"
+            query = f"SELECT * FROM feedback LIMIT {num}"
+            await cur.execute(query)
+            return await cur.fetchall()
+        
+    async def read_undone_feedback(self, num: int):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            query = f"SELECT * FROM feedback WHERE IsDone = 0 LIMIT {num}"
             await cur.execute(query)
             return await cur.fetchall()
         
@@ -49,7 +62,7 @@ class Request:
         
     async def read_statistic(self, num: int):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"SELECT * FROM Statistics FIRST {num}"
+            query = f"SELECT * FROM Statistics LIMIT {num}"
             await cur.execute(query)
             return await cur.fetchall()
         
@@ -58,10 +71,11 @@ class Request:
             query = f"INSERT INTO Links (Categories, Description, Link, Likes, name, authors)" \
                 f"VALUES ({categories}, {description}, {link}, {likes}, {name}, {authors}) ON DUPLICATE KEY UPDATE;"
             await cur.execute(query)
+            return await cur.fetchall()
             
     async def read_links(self, num: int):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"SELECT * FROM Links FIRST {num}"
+            query = f"SELECT * FROM Links LIMIT {num}"
             await cur.execute(query)
             return await cur.fetchall()
         
@@ -70,3 +84,15 @@ class Request:
             query = f"DELETE FROM Links WHERE idLinks = {id}"
             await cur.execute(query)
             return await cur.fetchall()
+        
+    async def create_backup(self):
+        await os.system(f'mysqldump -u root -p{Setting.bots.db_password} researchbot > "D:\backups\test.sql"')
+        
+
+    async def load_backup(self):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            backup = codecs.open( r"D:\backups\test.sql", "r", "utf_8_sig" )
+            query = backup.read() 
+            backup.close()
+            await cur.execute(query)
+            return await cur.fetchall() 

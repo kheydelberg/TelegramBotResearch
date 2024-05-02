@@ -5,6 +5,8 @@ from core.keyboards.reply import reply_keyboard, loc_tel_poll_keyboard, get_repl
 from core.keyboards.inline import select_macbook, get_inline_keyboard
 from core.utils.dbconnect import Request
 
+import os
+import codecs
 
 async def get_inline(message: Message, bot: Bot):
     await message.answer('Hello, its inline buttons', reply_markup=get_inline_keyboard())
@@ -33,6 +35,12 @@ async def get_hello(message: Message, bot: Bot):
     json_str = json.dumps(message.dict(), default=str)
     print(json_str)
 
-async def get_secret(message: Message, bot: Bot):
-    await message.answer(f'<tg-spoiler> Нефедов ПИДАРАС, ПИДАРАСИНА</tg-spoiler>')
 
+    
+async def test(message: Message, bot: Bot, request: Request):
+    res = await request.author_search(author='Асташова')
+    print(type(res))
+    print(res)
+    message.answer('lasdkfjlas')
+    
+    
