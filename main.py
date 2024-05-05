@@ -48,7 +48,7 @@ async def create_pool():
             host = 'localhost', 
             port = 3306, 
             user='root',
-            password='Basek@319_',
+            password=f'{Setting.bots.db_password}',
             db='ResearchBot',
             autocommit=True,
             )
@@ -57,7 +57,7 @@ async def create_pool():
             host = 'localhost', 
             port = 3306, 
             user='root',
-            password='Basek@319_',
+            password=f'{Setting.bots.db_password}',
             db='mydb',
             autocommit=True,
             )

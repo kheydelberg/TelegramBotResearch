@@ -14,19 +14,19 @@ class Request:
 
     async def author_search(self, author: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"SELECT name, description, link, authors FROM Links WHERE authors LIKE '%{author}%'"
+            query = f"SELECT name, description, link, authors FROM Links WHERE authors LIKE '%{author}%' ORDER BY likes desc"
             await cur.execute(query)
             return await cur.fetchall()
             
     async def name_search(self, name: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"SELECT name, description, link, authors FROM Links WHERE name LIKE '%{name}%'"
+            query = f"SELECT name, description, link, authors FROM Links WHERE name LIKE '%{name}%' ORDER BY likes desc"
             await cur.execute(query)
             return await cur.fetchall()
             
     async def category_search(self, category: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            query = f"SELECT name, description, link, authors FROM Links WHERE categories LIKE '%{category}%'"
+            query = f"SELECT name, description, link, authors FROM Links WHERE categories LIKE '%{category}%' ORDER BY likes desc"
             await cur.execute(query)
             return await cur.fetchall()
 

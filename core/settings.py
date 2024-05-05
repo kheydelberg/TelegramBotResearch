@@ -18,4 +18,4 @@ def get_settings(path: str):
 
     return Settings(bots=Bots(bot_token=env.str("DEV_TOKEN"), admin_id=env.int("ADMIN_ID"), db_password=env.str("DB_password")))
 
-Setting = get_settings('Confidential')
+Setting = get_settings('Secret.txt')
