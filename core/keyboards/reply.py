@@ -43,7 +43,7 @@ def get_category_of_math():
     keyboard_builder.button(text='Математический анализ', callback_data='matan')
     keyboard_builder.button(text='Линейная алгебра', callback_data='linal')
     keyboard_builder.button(text='Дискретная математика', callback_data='discra')
-    keyboard_builder.button(text='Геометрия и топологи', callback_data='git')
+    keyboard_builder.button(text='Геометрия и топология', callback_data='git')
     keyboard_builder.button(text='Дифференциальные уравнения', callback_data='diffur')
     keyboard_builder.button(text='Теория вероятности и мат. статистика', callback_data='twims')
     keyboard_builder.button(text='Назад', callback_data='back_math')

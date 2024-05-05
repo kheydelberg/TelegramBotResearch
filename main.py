@@ -10,7 +10,8 @@ from aiogram.filters import Command
 # from core.handlers.basic import get_location
 from core.handlers.basic import get_inline
 # from core.handlers.basic import get_photo
-from core.handlers.callback import get_C_plusplus, get_C_sharp, get_back_math, get_back_prog, get_contact, get_diffur, get_discra, get_git, get_java, get_linal, get_matan, get_python, get_twims
+from core.handlers.callback import get_C_plusplus, get_C_sharp, get_back_math, get_back_prog, get_contact, get_diffur
+from core.handlers.callback import get_discra, get_git, get_java, get_linal, get_matan, get_python, get_twims
 from core.handlers.callback import get_geo
 from core.handlers.callback import get_math, get_prog
 

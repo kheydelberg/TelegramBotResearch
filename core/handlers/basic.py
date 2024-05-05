@@ -5,8 +5,12 @@ from core.keyboards.reply import get_inline_keyboard, get_Math_Prog
 
 
 async def get_start(message: Message, bot: Bot):
-    await message.answer(f'Привет, <b>{message.from_user.first_name}</b>!',
-                         reply_markup=get_inline_keyboard())
+    await message.answer(f'<b>{message.from_user.first_name}</b>, добро пожаловать в нашего образовательного бота!\n\n\
+Забудь о бесконечном поиске учебных материалов и учебников - теперь все на твоем экране.\
+Просто выбери нужный предмет, и мы предоставим тебе каталог самых полезных учебников и материалов.\
+Этот бот станет твоим надежным помощником в обучении,\
+экономя время и снимая стресс поиска необходимой информации.\n\n Давай приступим?',
+                         reply_markup=get_Math_Prog())
 
 
 async def get_choose_subject(message: Message, bot: Bot):
