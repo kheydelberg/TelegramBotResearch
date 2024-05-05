@@ -1,1 +1,43 @@
+import re
+
+def validate_text(text):
+    """
+    Проверка текста на допустимые символы и длину.
+    """
+    if not text:
+        return False
+    # Проверка на допустимые символы (только буквы, цифры, пробелы и знаки препинания)
+    if not re.match(r'^[\w\s.,!?-]+$', text):
+        return False
+    # Проверка длины текста (не более 100 символов)
+    if len(text) > 100:
+        return False
+    return True
+
+def validate_url(url):
+    """
+    Проверка URL на корректность.
+    """
+    if not url:
+        return False
+    # Простая проверка на соответствие шаблону URL
+    if not re.match(r'^https?://(?:www\.)?\w+\.\w{2,}$', url):
+        return False
+    return True
+
+def validate_addition(lesson, discipline, author, link):
+    """
+    Проверка данных о предложении на добавление учебника/дисциплины/автора и ссылки на ресурс.
+    """
+    # Проверка каждого из полей
+    if not validate_text(lesson):
+        return False, "Недопустимое название учебника"
+    if not validate_text(discipline):
+        return False, "Недопустимое название дисциплины"
+    if not validate_text(author):
+        return False, "Недопустимое имя автора"
+    if not validate_url(link):
+        return False, "Некорректная ссылка на ресурс"
+    return True, "Данные о предложении прошли валидацию"
+
 
