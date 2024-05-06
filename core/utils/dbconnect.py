@@ -66,7 +66,7 @@ class Request:
             await cur.execute(query)
             return await cur.fetchall()
         
-    async def create_link(self, categories, name, authors, description, link, likes):
+    async def create_link(self, categories, name, authors, description, link, likes=0):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"INSERT INTO Links (Categories, Description, Link, Likes, name, authors)" \
                 f"VALUES ({categories}, {description}, {link}, {likes}, {name}, {authors}) ON DUPLICATE KEY UPDATE;"
