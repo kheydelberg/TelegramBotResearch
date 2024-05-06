@@ -47,12 +47,12 @@ async def start():
     dp.message.register(add_material.get_link, StepsForm.GET_LINK)
     dp.message.register(add_material.get_name, StepsForm.GET_NAME)
     dp.message.register(add_material.get_author, StepsForm.GET_AUTHOR)
-    dp.message.register(add_material.get_all, StepsForm.GET_ALL)
-    dp.message.register(add_material.validate_material, StepsForm.VALIDATE_MATERIAL)
+    dp.message.register(add_material.get_all_validate, StepsForm.GET_ALL)
 
     dp.message.register(delete_material.show_db_to_delete, Command(commands='delete_material_id'))
     dp.message.register(delete_material.get_id, StepsForm.GET_ID)
-    dp.message.register(delete_material.delete_material, StepsForm.DELETE_MATERIAL)
+    dp.message(delete_material.check_id, StepsForm.CHECK_ID)
+    dp.message.register(delete_material.validate_number_delete_material, StepsForm.VALIDATE_ID)
 
     dp.callback_query.register(add_material.check_category, StepsForm.CHECK_CATEGORY)
     dp.callback_query.register(add_material.check_description, StepsForm.CHECK_DESCRIPTION)
@@ -64,29 +64,26 @@ async def start():
 
     dp.message.register(view_db.start_show_db, Command(commands='show_materials'))
     dp.message.register(view_db.get_number_str, StepsForm.GET_NUMBER_DB)
-    dp.message.register(view_db.validate_number, StepsForm.VALIDATE_NUMBER_DB)
-    dp.message.register(view_db.show_db, StepsForm.SHOW_DB)
+    dp.message.register(view_db.validate_number_show_db, StepsForm.VALIDATE_NUMBER_DB)
 
     dp.callback_query.register(view_db.check_number_str, StepsForm.CHECK_NUMBER_DB)
 
     dp.message.register(view_feedback.start_show_feedbacks, Command(commands='show_feedbacks'))
     dp.message.register(view_feedback.get_number_str, StepsForm.GET_NUMBER_FB)
-    dp.message.register(view_feedback.validate_number, StepsForm.VALIDATE_NUMBER_FB)
-    dp.message.register(view_feedback.show_feedbacks, StepsForm.SHOW_FEEDBACKS)
+    dp.message.register(view_feedback.validate_number_show_feedbacks, StepsForm.VALIDATE_NUMBER_FB)
 
     dp.callback_query.register(view_feedback.check_number_str, StepsForm.CHECK_NUMBER_FB)
 
     dp.message.register(view_raw_feedback.start_show_raw_feedbacks, Command(commands='show_raw_feedbacks'))
     dp.message.register(view_raw_feedback.get_number_str, StepsForm.GET_NUMBER_RFB)
-    dp.message.register(view_raw_feedback.validate_number, StepsForm.VALIDATE_NUMBER_RFB)
-    dp.message.register(view_raw_feedback.show_raw_feedbacks, StepsForm.SHOW_RAW_FEEDBACKS)
+    dp.message.register(view_raw_feedback.validate_number_show_raw_feedbacks, StepsForm.VALIDATE_NUMBER_RFB)
 
     dp.callback_query.register(view_raw_feedback.check_number_str, StepsForm.CHECK_NUMBER_RFB)
 
     dp.message.register(view_statistic.start_show_statistic, Command(commands='show_statistic'))
     dp.message.register(view_statistic.get_number_str, StepsForm.GET_NUMBER_ST)
-    dp.message.register(view_statistic.validate_number, StepsForm.VALIDATE_NUMBER_ST)
-    dp.message.register(view_statistic.show_statistic, StepsForm.SHOW_STATISTIC)
+    dp.message.register(view_statistic.check_number_str, StepsForm.CHECK_NUMBER_ST) 
+    dp.message.register(view_statistic.validate_number_show_statistic, StepsForm.VALIDATE_NUMBER_ST)
 
     dp.callback_query.register(view_statistic.check_number_str, StepsForm.CHECK_NUMBER_ST)
 

@@ -17,19 +17,18 @@ async def get_number_str(message: Message, state: FSMContext):
 async def check_number_str(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer(f'Отлично, Вы подтвердили количество строк для просмотра, подождите немного и количество строк будет провалидировано, хорошо?')
+       await call.message.answer(f'Отлично, Вы подтвердили количество строк для просмотра')
        await state.set_state(StepsForm.VALIDATE_NUMBER_DB)
+       await validate_number_show_db(call.message, state)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно количество строк")
         await state.set_state(StepsForm.GET_NUMBER_DB)
 
-async def validate_number(message: Message, bot: Bot, state: FSMContext):
+async def validate_number_show_db(message: Message, state: FSMContext):
     # функиця валидации типа
-    await bot.send_message(message.from_user.id, f'провалидировали все норм или нет))), подождите немного и БД будет выведена, хорошо?')
+    await message.answer(f'провалидировали все норм или нет)))')
     await state.set_state(StepsForm.SHOW_DB)
-    
-
-async def show_db(message: Message, bot: Bot, state: FSMContext):
-    await bot.send_message(message.from_user.id, f'Наша шедевро датабейз')
+    await message.answer(f'Наша шедевро датабейз')
     # функция, которая показывает БД
     await state.clear()
+    

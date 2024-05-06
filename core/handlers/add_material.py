@@ -71,24 +71,31 @@ async def get_author(message: Message, state: FSMContext):
     await state.set_state(StepsForm.CHECK_AUTHOR)
     await state.update_data(author=message.text)
 
+
 async def check_author(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили, подождите немного и материал будет отправлен на валидацию, хорошо?")
-       await state.set_state(StepsForm.GET_ALL)
+       await call.message.answer("Отлично, Вы подтвердили")
+       await get_all_validate(call.message, state)
+       await state.set_state(StepsForm.GET_ALL)  
+       
+
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
         await state.set_state(StepsForm.GET_AUTHOR)  
 
-async def get_all(message: Message, bot: Bot,  state: FSMContext):
+async def get_all_validate(message: Message, state: FSMContext):
     context_data = await state.get_data()
-    await bot.send_message(message.from_user.id, f'Сохраненные данные в машине состояний:\r\n{str(context_data)}, данные отправлены на валидацию, подождите немного и материал будет добавлен, хорошо?')
+    await message.answer(f'Сохраненные данные в машине состояний:\r\n{str(context_data)}')
     category = context_data.get('category')
     description = context_data.get('description')
     link = context_data.get('link')
     name = context_data.get('name')
     author = context_data.get('author')
     await state.set_state(StepsForm.VALIDATE_MATERIAL)
+    # функция Жени
+    await state.clear()
+    await message.answer(f'данные типо провалидированы') 
 
     """
     data_user = f'Введенные данные\r\n' \
@@ -102,10 +109,4 @@ async def get_all(message: Message, bot: Bot,  state: FSMContext):
     await message.answer(data_user)
     """
     #await state.clear()
-
-async def validate_material(message: Message, bot: Bot, state: FSMContext):
-    # функция Жени
-    await state.clear()
-    await bot.send_message(message.from_user.id, f'данные типо провалидированы')
-
     

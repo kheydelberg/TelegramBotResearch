@@ -62,3 +62,5 @@ class StepsForm(StatesGroup):
     VALIDATE_NUMBER_ST = State()
 
     SHOW_STATISTIC = State()
+
+    VALIDATE_ID = State()

@@ -17,19 +17,18 @@ async def get_number_str(message: Message, state: FSMContext):
 async def check_number_str(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer(f'Отлично, Вы подтвердили количество строк для просмотра, подождите немного и количество строк будет провалидировано, хорошо?')
+       await call.message.answer(f'Отлично, Вы подтвердили количество строк для просмотра')
+       await validate_number_show_statistic(call.message, state)
        await state.set_state(StepsForm.VALIDATE_NUMBER_ST)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно количество строк")
         await state.set_state(StepsForm.GET_NUMBER_ST)
 
-async def validate_number(message: Message, bot: Bot, state: FSMContext):
+async def validate_number_show_statistic(message: Message, state: FSMContext):
     # функиця валидации типа
-    await bot.send_message(message.from_user.id, f'провалидировали все норм или нет))), подождите немного и статистика будет выведена, хорошо?')
+    await message.answer(f'провалидировали все норм или нет)))')
     await state.set_state(StepsForm.SHOW_STATISTIC)
-    
-
-async def show_statistic(message: Message, bot: Bot, state: FSMContext):
-    await bot.send_message(message.from_user.id, f'Наша шедевро статистика')
+    await message.answer(f'Наша шедевро статистика')
     # функция, которая показывает статистику
     await state.clear()
+    

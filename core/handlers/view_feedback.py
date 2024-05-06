@@ -17,19 +17,18 @@ async def get_number_str(message: Message, state: FSMContext):
 async def check_number_str(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer(f'Отлично, Вы подтвердили количество фидбеков для просмотра, подождите немного и количество фидбеков будет провалидировано, хорошо?')
+       await call.message.answer(f'Отлично, Вы подтвердили количество фидбеков для просмотра')
        await state.set_state(StepsForm.VALIDATE_NUMBER_FB)
+       await validate_number_show_feedbacks(call.message, state)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно количество фидбеков")
         await state.set_state(StepsForm.GET_NUMBER_FB)
 
-async def validate_number(message: Message, bot: Bot, state: FSMContext):
+async def validate_number_show_feedbacks(message: Message, state: FSMContext):
     # функиця валидации типа
-    await bot.send_message(message.from_user.id, f'провалидировали все норм или нет))), подождите немного и фидбеки будут показаны, хорошо?')
+    await message.answer(f'провалидировали все норм или нет)))')
     await state.set_state(StepsForm.SHOW_FEEDBACKS)
-    
-
-async def show_feedbacks(message: Message, bot: Bot, state: FSMContext):
-    await bot.send_message(message.from_user.id, f'Наши шедевро фидбеки')
+    await message.answer(f'Наши шедевро фидбеки')
     # функция, которая показывает фидбеки
     await state.clear()
+    
