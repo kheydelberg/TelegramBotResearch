@@ -14,14 +14,45 @@ def validate_text(text):
         return False
     return True
 
-def validate_url(url):
+def is_russian_or_latin(letter):
+    if not letter:
+        return False
+
+    # Проверка на принадлежность к русскому алфавиту
+    if ord('А') <= ord(letter) <= ord('я'):
+        return True
+
+    # Проверка на принадлежность к латинскому алфавиту
+    if ord('A') <= ord(letter) <= ord('Z') or ord('a') <= ord(letter) <= ord('z'):
+        return True
+
+    return False
+
+
+def validate_authors(author):
+    s=author.split(';')
+    for i in s:
+        if not(is_russian_or_latin(i[0]) and i[1]=='.'):
+            return False
+    return True
+
+
+
+def validate_category(author):
+    pass
+def validate_name(author):
+    pass
+def validate_name(author):
+    pass
+
+def validate_link(url):
     """
     Проверка URL на корректность.
     """
     if not url:
         return False
     # Простая проверка на соответствие шаблону URL
-    if not re.match(r'^https?://(?:www\.)?\w+\.\w{2,}$', url):
+    if not re.match(r'^(http|https)://.*$', url):
         return False
     return True
 
