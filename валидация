@@ -1,18 +1,23 @@
 import re
+def validate_text(last_name):
 
-def validate_text(text):
-    """
-    Проверка текста на допустимые символы и длину.
-    """
-    if not text:
-        return False
-    # Проверка на допустимые символы (только буквы, цифры, пробелы и знаки препинания)
-    if not re.match(r'^[\w\s.,!?-]+$', text):
-        return False
-    # Проверка длины текста (не более 100 символов)
-    if len(text) > 100:
-        return False
-    return True
+
+  # Проверяем, является ли фамилия строкой и содержит ли хотя бы один символ
+  if not isinstance(last_name, str) or not last_name:
+    return False
+
+  # Составляем регулярное выражение для валидации
+  pattern = r"^[A-Za-zА-Яа-я]+$"
+
+  # Проверяем фамилию на соответствие регулярному выражению.
+  if not re.match(pattern, last_name):
+    return False
+
+  # Фамилия валидная
+  return True
+
+
+
 
 def is_russian_or_latin(letter):
     if not letter:
@@ -30,20 +35,46 @@ def is_russian_or_latin(letter):
 
 
 def validate_authors(author):
-    s=author.split(';')
+    s = author.split(';')
+    s= [x.strip() for x in s]
+    print(s)
     for i in s:
-        if not(is_russian_or_latin(i[0]) and i[1]=='.'):
+        if i.count('.') > 2:
             return False
-    return True
+        elif i.count('.') == 2:
+            if is_russian_or_latin(i[0]) and i[1] == '.' and is_russian_or_latin(i[2]) and i[3] == '.' and i[4]==" ":
+                pass
+            else:
+                print('Errorrrrrrrrrrrrrrr',i)
+                return False
+            if not (validate_text(i[5:])):
+                print('Error', i)
+                return False
 
+        elif i.count('.') == 1:
+            if is_russian_or_latin(i[0]) and i[1] == '.' and  i[2]==" ":
+                pass
+            else:
+                return False
+            if not (validate_text(i[3:])):
+                return False
+        else:
+            return False
+
+    return True
 
 
 def validate_category(author):
     pass
+
+
 def validate_name(author):
     pass
+
+
 def validate_name(author):
     pass
+
 
 def validate_link(url):
     """
@@ -56,19 +87,10 @@ def validate_link(url):
         return False
     return True
 
+
 def validate_addition(lesson, discipline, author, link):
-    """
-    Проверка данных о предложении на добавление учебника/дисциплины/автора и ссылки на ресурс.
-    """
-    # Проверка каждого из полей
-    if not validate_text(lesson):
-        return False, "Недопустимое название учебника"
-    if not validate_text(discipline):
-        return False, "Недопустимое название дисциплины"
-    if not validate_text(author):
-        return False, "Недопустимое имя автора"
-    if not validate_url(link):
-        return False, "Некорректная ссылка на ресурс"
-    return True, "Данные о предложении прошли валидацию"
+    pass
 
 
+author = 'И.В. Асташова; О. Прокопенко'
+print(validate_authors(author))
