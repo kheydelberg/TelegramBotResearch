@@ -49,3 +49,12 @@ def create_pagination_keyboard(*buttons: str) -> InlineKeyboardMarkup:
         callback_data=button) for button in buttons])
 
     return keyboard_builder.as_markup()
+
+def do_you_like():
+    keyboard_builder= InlineKeyboardBuilder()
+    keyboard_builder.button(text= 'Да👌', callback_data='like')
+    keyboard_builder.button(text='Нет😒', callback_data='not_like')
+
+    keyboard_builder.adjust(2)
+
+    return keyboard_builder.as_markup()
