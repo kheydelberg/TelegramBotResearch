@@ -27,7 +27,7 @@ class STAT:
         self.db = req
         
     async def reset_statistic(self):
-        statistics["count_searched"] = int(sum(statistics["user_requests"].values()))
+        statistics["count_searched"] = int(len(statistics["user_requests"].keys())) # количество уникальных пользователей за день
         print( await (self.db).create_statistic(count_searched=statistics["count_searched"], Date="'" + str(datetime.now()).split()[0] + "'", Succesfull_Search=statistics["Succesfull_Search"]) )
 
         statistics["count_searched"] = 0

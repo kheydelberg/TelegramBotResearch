@@ -101,7 +101,7 @@ async def start():
 
     # dp.update.middleware.register(SchedulerMiddleware(scheduler))
     dp.update.middleware.register(DBSession(pool_connect))
-    
+    dp.message.middleware.register(apsched.statistics_middleware())
     
     dp.message.register(get_photo, F.photo)
     dp.message.register(get_start, Command(commands=['start', 'run']))  # CommandStart()

@@ -3,13 +3,14 @@ from aiogram.types import Message
 import json
 from . import apsched
 from core.utils.dbconnect import Request
+from .STATISTIC import statistics
 
 import os
 import codecs
 
 
 
-async def get_start(message: Message, bot: Bot, counter: str, request: Request):
+async def get_start(message: Message, bot: Bot, request: Request):
     await bot.send_message(message.from_user.id, f"{message.from_user.first_name}, а ты знал, что <b>Это send_message</b> ")
 
 
@@ -25,5 +26,7 @@ async def get_photo(message: Message, bot: Bot):
 async def test(message: Message, bot: Bot, request: Request):
     # await apsched.reset_statistic(request)
     await message.answer('test')
+    print(statistics)
+    print(int(len(statistics["user_requests"].keys())))
     
     
