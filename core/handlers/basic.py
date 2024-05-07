@@ -1,6 +1,7 @@
 from aiogram import Bot
 from aiogram.types import Message
 import json
+from . import apsched
 from core.utils.dbconnect import Request
 
 import os
@@ -22,9 +23,7 @@ async def get_photo(message: Message, bot: Bot):
 
     
 async def test(message: Message, bot: Bot, request: Request):
-    res = await request.author_search(author='Асташова')
-    print(type(res))
-    print(res)
-    await message.answer('lasdkfjlas')
+    # await apsched.reset_statistic(request)
+    await message.answer('test')
     
     
