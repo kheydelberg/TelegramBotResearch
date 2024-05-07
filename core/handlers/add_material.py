@@ -67,6 +67,7 @@ async def check_name(call: CallbackQuery, state: FSMContext):
         await state.set_state(StepsForm.GET_NAME)  
 
 async def get_author(message: Message, state: FSMContext):
+    # сделать так штоб можно было выбрать ввод фио или никнейм
     await message.answer(f'Автор материала:\r\n{message.text}\r\n',reply_markup=get_inline_keyboard())
     await state.set_state(StepsForm.CHECK_AUTHOR)
     await state.update_data(author=message.text)
@@ -75,7 +76,7 @@ async def get_author(message: Message, state: FSMContext):
 async def check_author(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили")
+       await call.message.answer("Отлично, Вы подтвердили Автора")
        await get_all_validate(call.message, state)
        await state.set_state(StepsForm.GET_ALL)  
        
@@ -93,20 +94,17 @@ async def get_all_validate(message: Message, state: FSMContext):
     name = context_data.get('name')
     author = context_data.get('author')
     await state.set_state(StepsForm.VALIDATE_MATERIAL)
-    # функция Жени
-    await state.clear()
+    # функция Жени, которая говорит введенные данные норм или нет
     await message.answer(f'данные типо провалидированы') 
+    await state.set_state(StepsForm.ADD_MATERIAL)
+    await add_material(message, state, context_data) 
 
-    """
-    data_user = f'Введенные данные\r\n' \
-    f'Категория {category}\r\n' \
-    f'Описание {description}\r\n' \
-    f'Ссылка {link}\r\n' \
-    f'Название {name}\r\n' \
-    f'Атвор {author}'
-    await bot.send_message(message.from_user.id, f'данные отправлены на валидацию, подождите немного и материал будет добавлен, хорошо?')
-    await state.set_state(StepsForm.VALIDATE_MATERIAL)
-    await message.answer(data_user)
-    """
-    #await state.clear()
+async def add_material(message: Message, state: FSMContext, data):
+    # функция, которая добавляет материал
+    data = data # лютый кринж временный
+    await message.answer(f'данные типо добавлены') 
+    await state.clear()
+
+
+
     

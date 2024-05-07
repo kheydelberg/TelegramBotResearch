@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from core.keyboards.inline_keyboard import get_inline_keyboard
 from core.utils.statesform import StepsForm
 from aiogram.types import Message, CallbackQuery
-from aiogram import Bot
+
 
 
 async def show_db_to_delete(message: Message, state: FSMContext):
@@ -21,13 +21,13 @@ async def check_id(call: CallbackQuery, state: FSMContext):
     if (call.data.endswith('yes')):
        await call.message.answer(f'Отлично, Вы подтвердили ID')
        await state.set_state(StepsForm.VALIDATE_ID)
-       await validate_number_delete_material(call.message, state)
+       await validate_id_delete_material(call.message, state)
 
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно ID")
         await state.set_state(StepsForm.GET_ID)
 
-async def validate_number_delete_material(message: Message, state: FSMContext):
+async def validate_id_delete_material(message: Message, state: FSMContext):
     # функиця валидации типа
     await message.answer(f'провалидировали все норм или нет)))')
     await state.set_state(StepsForm.SHOW_STATISTIC)

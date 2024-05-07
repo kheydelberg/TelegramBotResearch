@@ -11,6 +11,9 @@ from core.handlers import view_db
 from core.handlers import view_feedback
 from core.handlers import view_raw_feedback
 from core.handlers import view_statistic
+from core.handlers import load_backup
+from core.handlers import make_backup
+from core.handlers import changing_feedback_status
 from core.utils.statesform import StepsForm
 
 
@@ -48,11 +51,12 @@ async def start():
     dp.message.register(add_material.get_name, StepsForm.GET_NAME)
     dp.message.register(add_material.get_author, StepsForm.GET_AUTHOR)
     dp.message.register(add_material.get_all_validate, StepsForm.GET_ALL)
+    dp.message.register(add_material.add_material, StepsForm.ADD_MATERIAL)
 
     dp.message.register(delete_material.show_db_to_delete, Command(commands='delete_material_id'))
     dp.message.register(delete_material.get_id, StepsForm.GET_ID)
     dp.message(delete_material.check_id, StepsForm.CHECK_ID)
-    dp.message.register(delete_material.validate_number_delete_material, StepsForm.VALIDATE_ID)
+    dp.message.register(delete_material.validate_id_delete_material, StepsForm.VALIDATE_ID)
 
     dp.callback_query.register(add_material.check_category, StepsForm.CHECK_CATEGORY)
     dp.callback_query.register(add_material.check_description, StepsForm.CHECK_DESCRIPTION)
@@ -77,16 +81,20 @@ async def start():
     dp.message.register(view_raw_feedback.start_show_raw_feedbacks, Command(commands='show_raw_feedbacks'))
     dp.message.register(view_raw_feedback.get_number_str, StepsForm.GET_NUMBER_RFB)
     dp.message.register(view_raw_feedback.validate_number_show_raw_feedbacks, StepsForm.VALIDATE_NUMBER_RFB)
-
     dp.callback_query.register(view_raw_feedback.check_number_str, StepsForm.CHECK_NUMBER_RFB)
 
     dp.message.register(view_statistic.start_show_statistic, Command(commands='show_statistic'))
     dp.message.register(view_statistic.get_number_str, StepsForm.GET_NUMBER_ST)
-    dp.message.register(view_statistic.check_number_str, StepsForm.CHECK_NUMBER_ST) 
+    dp.callback_query.register(view_statistic.check_number_str, StepsForm.CHECK_NUMBER_ST)
     dp.message.register(view_statistic.validate_number_show_statistic, StepsForm.VALIDATE_NUMBER_ST)
 
-    dp.callback_query.register(view_statistic.check_number_str, StepsForm.CHECK_NUMBER_ST)
+    dp.message.register(make_backup.make_backup, Command(commands='make_backup'))
+    dp.message.register(load_backup.load_backup, Command(commands='load_backup'))
 
+    dp.message.register(changing_feedback_status.show_fb_to_changing_fb_status, Command(commands='changing_feedback_status'))
+    dp.message.register(changing_feedback_status.get_id_fb, StepsForm.GET_ID_FB)
+    dp.callback_query.register(changing_feedback_status.check_id_fb, StepsForm.CHECK_ID_FB)
+    dp.message.register(changing_feedback_status.validate_id_change_status, StepsForm.VALIDATE_ID_FB)
 
     try:
         await dp.start_polling(bot)  # Запуск бота с использованием long polling

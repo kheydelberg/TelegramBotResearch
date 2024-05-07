@@ -3,7 +3,6 @@ from aiogram.fsm.context import FSMContext
 from core.keyboards.inline_keyboard import get_inline_keyboard
 from core.utils.statesform import StepsForm
 from aiogram.types import Message, CallbackQuery
-from aiogram import Bot
 
 async def start_show_statistic(message: Message, state: FSMContext):
     await message.answer(f'{message.from_user.first_name}, Введите количество строк, которые хотите посмотреть')
