@@ -1,68 +1,44 @@
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message
+from core.handlers.basic import get_choose_subject, get_help, get_start
 import asyncio
-import logging #Блять что это???????????????????????????????????????????
-
-
-from core.handlers.basic import get_start, get_photo, get_hello, get_location, get_secret, get_inline
-from core.handlers.callback import select_macbook
-from core.filters.iscontact import IsTrueContact
-from core.handlers.contact import get_true_contact, get_fake_contact
-from core.settings import Setting
-from aiogram.filters import Command, CommandStart
+import logging
 from aiogram import F
+from core.settings import settings
 from core.utils.commands import set_commands
-from core.utils.callbackdata import MacInfo
-from core.handlers.pay import order, pre_checkout_query, successful_payment, shipping_check
-from core.middlewares.countermiddleware import CounterMiddleware
-from core.middlewares.officehours import OfficeHoursMiddleware
-
-
-
-
-async def start_bot(bot: Bot):
-    await set_commands(bot)
-    await bot.send_message(Setting.bots.admin_id,
-                           f"Бот запущен!!!")
-    print('Бот запущен!!!')
-
-async def stop_bot(bot: Bot):
-    await bot.send_message(Setting.bots.admin_id,
-                           f"Бот остановлен!!!")
-    print("Бот остановлен!")
+from aiogram.filters import Command
+from core.handlers.callback import get_C_plusplus, get_C_sharp, get_back_math, get_back_prog, get_diffur
+from core.handlers.callback import get_discra, get_git, get_java, get_linal, get_matan, get_python, get_twims
+from core.handlers.callback import get_math, get_prog
 
 
 async def start():
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s - [%(levelname)s] - %(name)s - "
-                        "(%(filename)s.%(funcName)s(%(lineno)d) - %(message)s")
+                        "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
+                        )
 
-    bot = Bot(token=Setting.bots.bot_token, parse_mode='HTML')
+    bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')
 
+    await set_commands(bot)
 
     dp = Dispatcher()
-    dp.message.middleware.register(CounterMiddleware())
-    dp.update.middleware.register(OfficeHoursMiddleware())
-    dp.message.register(order, Command(commands='pay'))
-    dp.pre_checkout_query.register(pre_checkout_query)
-    dp.message.register(successful_payment, F.successful_payment)
-    dp.shipping_query.register(shipping_check)
-    #dp.callback_query.register(select_macbook, F.data.startswith('inline_'))
-    #dp.callback_query.register(select_macbook, MacInfo.filter())
-    dp.callback_query.register(select_macbook, MacInfo.filter(F.num == 1))
-    dp.message.register(get_location, F.location)
-    dp.message.register(get_inline, Command(commands='inline'))
-    dp.message.register(get_hello, F.text == 'Привет')
-    dp.message.register(get_secret, F.text == 'Секрет')
-    dp.message.register(get_true_contact, F.contact, IsTrueContact())
-    dp.message.register(get_fake_contact, F.contact)
-    dp.message.register(get_photo, F.photo)
-    dp.message.register(get_start, Command(commands=['start', 'run']))  # CommandStart()
-    dp.startup.register(start_bot)
-    dp.shutdown.register(stop_bot)
-
-
-
+    dp.callback_query.register(get_prog, F.data == 'prog')
+    dp.callback_query.register(get_math, F.data == 'math')
+    dp.callback_query.register(get_matan, F.data == 'matan')
+    dp.callback_query.register(get_linal, F.data == 'linal')
+    dp.callback_query.register(get_discra, F.data == 'discra')
+    dp.callback_query.register(get_git, F.data == 'git')
+    dp.callback_query.register(get_diffur, F.data == 'diffur')
+    dp.callback_query.register(get_twims, F.data == 'twims')
+    dp.callback_query.register(get_C_plusplus, F.data == 'C++')
+    dp.callback_query.register(get_C_sharp, F.data == 'C#')
+    dp.callback_query.register(get_python, F.data == 'python')
+    dp.callback_query.register(get_java, F.data == 'java')
+    dp.callback_query.register(get_back_math, F.data == 'back_math')
+    dp.callback_query.register(get_back_prog, F.data == 'back_prog')
+    dp.message.register(get_choose_subject, Command(commands='subject'))
+    dp.message.register(get_help, Command(commands='help'))
+    dp.message.register(get_start, Command(commands=['start', 'run']))
     try:
         await dp.start_polling(bot)
     finally:

@@ -1,47 +1,61 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonPollType
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-
-reply_keyboard = ReplyKeyboardMarkup(keyboard=[
-    [
-        KeyboardButton(text='Ряд 1. Кнопка 1'),
-        KeyboardButton(text='Ряд 1. Кнопка 2'),
-        KeyboardButton(text='Ряд 1. Кнопка 3')
-    ],
-    [
-        KeyboardButton(text='Ряд 2. Кнопка 1'),
-        KeyboardButton(text='Ряд 2. Кнопка 2'),
-        KeyboardButton(text='Ряд 2. Кнопка 3'),
-        KeyboardButton(text='Ряд 2. Кнопка 4')
-    ],
-    [
-        KeyboardButton(text='Ряд 3. Кнопка 1'),
-        KeyboardButton(text='Ряд 3. Кнопка 2')
-    ]
-], resize_keyboard=True, one_time_keyboard=True, input_field_placeholder='ЛУЛУЛКЛ', selective=True)
-
-loc_tel_poll_keyboard = ReplyKeyboardMarkup(keyboard=[
-    [
-        KeyboardButton(text='Отправить геолокацию', request_location=True)
-    ],
-    [
-        KeyboardButton(text='Отправить контакт', request_contact=True)
-    ],
-    [
-        KeyboardButton(text='Создать викторину', request_poll= KeyboardButtonPollType())
-    ]
-], resize_keyboard=True, one_time_keyboard=False, input_field_placeholder='Отправь локу, тел или создай викт')
+import types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from lexicon.lexicon import LEXICON
 
 
-def get_reply_keyboard():
-    keyboard_builder = ReplyKeyboardBuilder()
 
-    keyboard_builder.button(text='Кнопка 1')
-    keyboard_builder.button(text='Кнопка 2')
-    keyboard_builder.button(text='Кнопка 3')
-    keyboard_builder.button(text='Отправить гео', request_location=True)
-    keyboard_builder.button(text='Отправить контакт', request_contact=True)
-    keyboard_builder.button(text='Создать викторину', request_poll=KeyboardButtonPollType())
-    keyboard_builder.adjust(3, 2, 1)
-    return keyboard_builder.as_markup(resize_keyboard = True, one_time_keyboard= True, input_field_placeholder='Отправь локу, тел или создай викт')
+def get_Math_Prog():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Высшая математика', callback_data='math')
+    keyboard_builder.button(text='Программирование', callback_data='prog')
+
+    keyboard_builder.adjust(2)
+
+    return keyboard_builder.as_markup()
+
+def get_category_of_math():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Математический анализ', callback_data='matan')
+    keyboard_builder.button(text='Линейная алгебра', callback_data='linal')
+    keyboard_builder.button(text='Дискретная математика', callback_data='discra')
+    keyboard_builder.button(text='Геометрия и топология', callback_data='git')
+    keyboard_builder.button(text='Дифференциальные уравнения', callback_data='diffur')
+    keyboard_builder.button(text='Теория вероятности и мат. статистика', callback_data='twims')
+    keyboard_builder.button(text='Назад', callback_data='back_math')
+
+    keyboard_builder.adjust(1)
+
+    return keyboard_builder.as_markup()
+
+def get_category_of_prog():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='C++', callback_data='C++')
+    keyboard_builder.button(text='C#', callback_data='C#')
+    keyboard_builder.button(text='Python', callback_data='python')
+    keyboard_builder.button(text='Java', callback_data='java')
+    keyboard_builder.button(text='Назад', callback_data='back_prog')
+
+    keyboard_builder.adjust(2, 2)
+
+    return keyboard_builder.as_markup()
 
 
+def create_pagination_keyboard(*buttons: str) -> InlineKeyboardMarkup:
+    # Инициализируем билдер
+    keyboard_builder = InlineKeyboardBuilder()
+    # Добавляем в билдер ряд с кнопками
+    keyboard_builder.row(*[InlineKeyboardButton(
+        text=LEXICON[button] if button in LEXICON else button,
+        callback_data=button) for button in buttons])
+
+    return keyboard_builder.as_markup()
+
+def do_you_like():
+    keyboard_builder= InlineKeyboardBuilder()
+    keyboard_builder.button(text= 'Да👌', callback_data='like')
+    keyboard_builder.button(text='Нет😒', callback_data='not_like')
+
+    keyboard_builder.adjust(2)
+
+    return keyboard_builder.as_markup()
