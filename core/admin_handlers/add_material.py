@@ -1,8 +1,7 @@
 from aiogram.types import Message
-from aiogram import Bot
 from aiogram.fsm.context import FSMContext
-from core.keyboards.inline_keyboard import get_inline_keyboard
-from core.utils.statesform import StepsForm
+from core.keyboards.admin_inline_keyboard import get_inline_keyboard
+from core.utils.admin_statesform import StepsForm
 from aiogram.types import Message, CallbackQuery
 
 

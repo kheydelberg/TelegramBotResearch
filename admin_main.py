@@ -1,26 +1,26 @@
 from aiogram import Bot, Dispatcher
 import asyncio  
-from aiogram.filters import CommandStart, Command 
+from aiogram.filters import Command 
 import logging
-from core.handlers.basic import get_start
+from core.admin_handlers.basic import get_start
 from core.settings import settings
-from core.utils.commands import set_commands
-from core.handlers import add_material
-from core.handlers import delete_material
-from core.handlers import view_db
-from core.handlers import view_feedback
-from core.handlers import view_raw_feedback
-from core.handlers import view_statistic
-from core.handlers import load_backup
-from core.handlers import make_backup
-from core.handlers import changing_feedback_status
-from core.utils.statesform import StepsForm
+from core.utils.admin_commands import set_admin_commands
+from core.admin_handlers import add_material
+from core.admin_handlers import delete_material
+from core.admin_handlers import view_db
+from core.admin_handlers import view_feedback
+from core.admin_handlers import view_raw_feedback
+from core.admin_handlers import view_statistic
+from core.admin_handlers import load_backup
+from core.admin_handlers import make_backup
+from core.admin_handlers import changing_feedback_status
+from core.utils.admin_statesform import StepsForm
 
 
 
 # Функция для запуска бота
 async def start_bot(bot: Bot):
-    await set_commands(bot)
+    await set_admin_commands(bot)
     await bot.send_message(settings.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
 
 
@@ -38,9 +38,11 @@ async def start():
                         )
     
     bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
-
+    
     dp = Dispatcher()  # Создание экземпляра класса Dispatcher
-    dp.message.register(get_start, CommandStart())  # Регистрация обработчика для команды /start
+
+    dp.message.register(get_start, Command(commands='start_admin')) 
+
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
@@ -55,7 +57,7 @@ async def start():
 
     dp.message.register(delete_material.show_db_to_delete, Command(commands='delete_material_id'))
     dp.message.register(delete_material.get_id, StepsForm.GET_ID)
-    dp.message(delete_material.check_id, StepsForm.CHECK_ID)
+    dp.message.register(delete_material.check_id, StepsForm.CHECK_ID)
     dp.message.register(delete_material.validate_id_delete_material, StepsForm.VALIDATE_ID)
 
     dp.callback_query.register(add_material.check_category, StepsForm.CHECK_CATEGORY)
