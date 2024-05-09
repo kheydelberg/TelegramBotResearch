@@ -3,7 +3,6 @@ from core.utils.dbconnect import Request
 from aiogram import Bot, Dispatcher
 from core.handlers.basic import get_choose_subject, get_help, get_start
 import asyncio
-<<<<<<< HEAD
 import logging
 
 import aiomysql
@@ -12,12 +11,11 @@ from aiogram.fsm.storage.redis import RedisStorage
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler_di import ContextSchedulerDecorator
 
-from core.handlers.basic import get_start, get_photo, get_location, test
+from core.handlers.basic import get_start, test
 from core.settings import Setting
 from aiogram.filters import Command, CommandStart
 
 from aiogram import F
-from core.settings import settings
 from core.utils.commands import set_commands
 
 from aiogram.filters import Command
@@ -83,7 +81,7 @@ async def start():
                         "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
                         )
 
-    bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')
+    bot = Bot(token=Setting.bots.bot_token, parse_mode='HTML')
 
 
     await set_commands(bot)
