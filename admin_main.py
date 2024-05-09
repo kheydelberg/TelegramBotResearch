@@ -47,11 +47,7 @@ async def start():
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
-<<<<<<< HEAD
-=======
-    
 
->>>>>>> 261410de3e741b9cbfaa28f18ef958f5cb2e439c
     dp.message.register(add_material.get_category, StepsForm.GET_CATEGORY)
     dp.message.register(add_material.get_description, StepsForm.GET_DESCRIPTION)
     dp.message.register(add_material.get_link, StepsForm.GET_LINK)
