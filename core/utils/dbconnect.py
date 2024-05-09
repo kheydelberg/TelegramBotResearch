@@ -33,7 +33,7 @@ class Request:
     async def create_feedback(self, idTelegram, Type: str, Text: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"INSERT INTO feedback (idTelegram, Type, Text, IsDone)" \
-                f"VALUES ({idTelegram}, {Type}, {Text}, false) ON DUPLICATE KEY UPDATE;"
+                f"VALUES ({idTelegram}, {Type}, {Text}, false);"
             await cur.execute(query)
             return await cur.fetchall()
             
@@ -53,10 +53,10 @@ class Request:
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"SELECT COUNT(idLinks) FROM Links"
             await cur.execute(query)
-            Count_Links = await cur.fetchall()
+            Count_Links = ( await cur.fetchall() )[0]["COUNT(idLinks)"]
             
             query = f"INSERT INTO Statistics (Count_Searched, Date, Count_Links, Successful_Search)" \
-                f"VALUES ({count_searched}, {Date}, {Count_Links}, {Succesfull_Search}) ON DUPLICATE KEY UPDATE;"
+                f"VALUES ({count_searched}, {Date}, {Count_Links}, {Succesfull_Search});"
             await cur.execute(query)
             return await cur.fetchall()
         
@@ -66,10 +66,10 @@ class Request:
             await cur.execute(query)
             return await cur.fetchall()
         
-    async def create_link(self, categories, name, authors, description, link, likes):
+    async def create_link(self, categories, name, authors, description, link, likes=0):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"INSERT INTO Links (Categories, Description, Link, Likes, name, authors)" \
-                f"VALUES ({categories}, {description}, {link}, {likes}, {name}, {authors}) ON DUPLICATE KEY UPDATE;"
+                f"VALUES ({categories}, {description}, {link}, {likes}, {name}, {authors});"
             await cur.execute(query)
             return await cur.fetchall()
             
