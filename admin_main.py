@@ -3,7 +3,7 @@ import asyncio
 from aiogram.filters import Command 
 import logging
 from core.admin_handlers.basic import get_start
-from core.settings import settings
+from core.settings import Setting
 from core.utils.admin_commands import set_admin_commands
 from core.admin_handlers import add_material
 from core.admin_handlers import delete_material
@@ -22,12 +22,12 @@ from core.admin_handlers import admin_panel
 # Функция для запуска бота
 async def start_bot(bot: Bot):
     await set_admin_commands(bot)
-    await bot.send_message(settings.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
+    await bot.send_message(Setting.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
 
 
 # Функция для остановки бота
 async def stop_bot(bot: Bot):
-    await bot.send_message(settings.bots.admin_id, text='Бот остановлен')  # Отправка сообщения об остановке бота
+    await bot.send_message(Setting.bots.admin_id, text='Бот остановлен')  # Отправка сообщения об остановке бота
 
 
 # Основная функция для запуска бота
@@ -38,7 +38,7 @@ async def start():
                                "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
                         )
     
-    bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
+    bot = Bot(token=Setting.bots.bot_token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
     
     dp = Dispatcher()  # Создание экземпляра класса Dispatcher
 
