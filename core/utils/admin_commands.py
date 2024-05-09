@@ -1,14 +1,10 @@
 from aiogram import Bot
-from aiogram.types import BotCommand, BotCommandScopeAllChatAdministrators
+from aiogram.types import BotCommand, BotCommandScopeAllChatAdministrators, BotCommandScopeDefault
 
 async def set_admin_commands(bot: Bot):
-  commands = [
-      BotCommand(
-          command='start_admin',
-          description='Начало работы',
-          )
-          ]
-  await bot.set_my_commands(commands, BotCommandScopeAllChatAdministrators()) # скоуп может быть разным только для админов в том числе
+    commands = [BotCommand(command='start_admin', description='Начало работы')]
+  
+    await bot.set_my_commands(commands, BotCommandScopeDefault()) # скоуп может быть разным только для админов в том числе
 """
         BotCommand(
             command='help_admin',

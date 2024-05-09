@@ -1,4 +1,3 @@
-from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from core.keyboards.admin_inline_keyboard_yes_no import get_inline_keyboard_yes_no
 from core.utils.admin_statesform import StepsForm
@@ -16,6 +15,7 @@ async def get_number_str(message: Message, state: FSMContext):
 
 async def check_number_str(call: CallbackQuery, state: FSMContext):
     await call.answer()
+    print("="*100, call.data)
     if (call.data.endswith('yes')):
        await call.message.answer(f'Отлично, Вы подтвердили количество строк для просмотра')
        await state.set_state(StepsForm.VALIDATE_NUMBER_DB)
