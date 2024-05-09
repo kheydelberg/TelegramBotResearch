@@ -47,7 +47,7 @@ async def start():
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
-    dp.callback_query.register(admin_panel.admin_panel)
+    
 
     dp.message.register(add_material.get_category, StepsForm.GET_CATEGORY)
     dp.message.register(add_material.get_description, StepsForm.GET_DESCRIPTION)
@@ -99,6 +99,9 @@ async def start():
     dp.message.register(changing_feedback_status.get_id_fb, StepsForm.GET_ID_FB)
     dp.callback_query.register(changing_feedback_status.check_id_fb, StepsForm.CHECK_ID_FB)
     dp.message.register(changing_feedback_status.validate_id_change_status, StepsForm.VALIDATE_ID_FB)
+    
+
+    dp.callback_query.register(admin_panel.admin_panel)
 
     try:
         await dp.start_polling(bot)  # Запуск бота с использованием long polling
