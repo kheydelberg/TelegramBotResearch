@@ -2,4 +2,4 @@
 /.vs
 *__pycache__
 *input.env
-
+*Secret.txt

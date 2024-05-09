@@ -22,5 +22,5 @@ def get_settings(path: str):
             admin_id=env.int("ADMIN_ID")
         )
     )
-settings = get_settings('D:\РЭУ\Проекты\TelegramBotResearch\core\input.env')
+settings = get_settings('Secret.txt')
 print(settings)
