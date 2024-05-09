@@ -47,15 +47,15 @@ async def start():
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
-    dp.callback_query.register(admin_panel.admin_panel)
-
     dp.message.register(add_material.get_category, StepsForm.GET_CATEGORY)
     dp.message.register(add_material.get_description, StepsForm.GET_DESCRIPTION)
     dp.message.register(add_material.get_link, StepsForm.GET_LINK)
     dp.message.register(add_material.get_name, StepsForm.GET_NAME)
-    dp.message.register(add_material.get_author, StepsForm.GET_AUTHOR)
+    dp.message.register(add_material.get_author, StepsForm.GET_AUTHOR) 
     dp.message.register(add_material.get_all_validate, StepsForm.GET_ALL)
     dp.message.register(add_material.add_material, StepsForm.ADD_MATERIAL)
+
+    dp.callback_query.register(add_material.get_format, StepsForm.GET_FORMAT)
 
     #dp.message.register(delete_material.show_db_to_delete, Command(commands='delete_material_id'))
     dp.message.register(delete_material.get_id, StepsForm.GET_ID)
@@ -99,6 +99,8 @@ async def start():
     dp.message.register(changing_feedback_status.get_id_fb, StepsForm.GET_ID_FB)
     dp.callback_query.register(changing_feedback_status.check_id_fb, StepsForm.CHECK_ID_FB)
     dp.message.register(changing_feedback_status.validate_id_change_status, StepsForm.VALIDATE_ID_FB)
+
+    dp.callback_query.register(admin_panel.admin_panel)
 
     try:
         await dp.start_polling(bot)  # Запуск бота с использованием long polling

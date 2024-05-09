@@ -15,6 +15,7 @@ class StepsForm(StatesGroup):
     GET_ALL = State()
     VALIDATE_MATERIAL = State()
     ADD_MATERIAL = State()
+    GET_FORMAT = State()
 
     DELETE_MATERIAL = State()
     GET_ID = State()

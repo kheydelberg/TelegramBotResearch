@@ -8,4 +8,4 @@ async def get_start(message: Message, bot: Bot):
     if user_id == settings.bots.admin_id:
         await bot.send_message(message.from_user.id, f'<b>Привет, {message.from_user.first_name}, я админ панель, которая поможет тебе работать с БД, статистикой, фидбеками </b>', reply_markup=get_admin_panel())
     else:
-        return
+        await bot.send_message(message.from_user.id, f'<b>Привет, {message.from_user.first_name}, у Вас нет доступа')

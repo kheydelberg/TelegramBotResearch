@@ -60,25 +60,28 @@ async def get_name(message: Message, state: FSMContext):
 async def check_name(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердил")
-       await call.message.answer(f'Выберите формат ввода автора:\r\n{call.message.text}\r\n',reply_markup=get_inline_keyboard_author())
-       await state.set_state(StepsForm.GET_AUTHOR)
+       await call.message.answer("Отлично, Вы подтвердили")
+       await call.message.answer(f'Выберите формат ввода автора', reply_markup=get_inline_keyboard_author())
+       await state.set_state(StepsForm.GET_FORMAT)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
         await state.set_state(StepsForm.GET_NAME)  
 
-async def get_author(call: CallbackQuery, state: FSMContext):
+async def get_format(call: CallbackQuery, state: FSMContext):
     # сделать так штоб можно было выбрать ввод фио или никнейм
     await call.answer()
     if (call.data.endswith('fio')):
-       await call.message.answer("Отлично, Вы выбрали ФИОб введите автора")  
-    
+       await call.message.answer("Отлично, Вы выбрали ФИО, введите автора")  
     if (call.data.endswith('nickname')):
         await call.message.answer("Отлично, Вы выбрали никнейм, введите автора")
+    await state.update_data(format=call.data)
+    await state.set_state(StepsForm.GET_AUTHOR)
     
-    await state.update_data(format=call.message.text)
-    await call.message.answer(f'Автор материала:\r\n{call.message.text}\r\n',reply_markup=get_inline_keyboard_yes_no())
+async def get_author(message: Message, state: FSMContext):
+    await message.answer(f'Автор:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_AUTHOR)
+    await state.update_data(name=message.text)
+    
 
 async def check_author(call: CallbackQuery, state: FSMContext):
     await call.answer()
