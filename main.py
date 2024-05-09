@@ -1,5 +1,4 @@
 from aiogram import Bot, Dispatcher
-from aiogram.types import ContentType
 from core.handlers.basic import get_choose_subject, get_help, get_start
 import asyncio
 import logging

@@ -26,7 +26,6 @@ async def get_matan(call: CallbackQuery):
                               reply_markup=create_pagination_keyboard('backward','какая страница/из скольки','forward'))
     await call.message.answer(LEXICON['text_likes'], reply_markup=do_you_like())
 
-
 async def get_linal(call: CallbackQuery):
     await call.answer()
     await call.message.answer(await category_search(category=LEXICON_FOR_FUNC[call.data]),
