@@ -85,13 +85,18 @@ class Request:
             await cur.execute(query)
             return await cur.fetchall()
         
-    async def create_backup(self):
-        await os.system(f'mysqldump -u root -p{Setting.bots.db_password} researchbot > "D:\backups\test.sql"')
+    async def add_like(self, id: int):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            query = f"UPDATE links SET likes = likes + 1 WHERE idLinks = {id}"
+            await cur.execute(query)
+            return await cur.fetchall()
         
-
+    async def create_backup(self):
+        await os.system(f'mysqldump -u root -p{Setting.bots.db_password} researchbot > "{Setting.bots.Backup_path}"')
+        
     async def load_backup(self):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
-            backup = codecs.open( r"D:\backups\test.sql", "r", "utf_8_sig" )
+            backup = codecs.open( rf"{Setting.bots.Backup_path}", "r", "utf_8_sig" )
             query = backup.read() 
             backup.close()
             await cur.execute(query)
