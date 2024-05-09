@@ -1,6 +1,7 @@
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from core.keyboards.admin_inline_keyboard import get_inline_keyboard
+from core.keyboards.admin_inline_keyboard_yes_no import get_inline_keyboard_yes_no
+from core.keyboards.inline_get_author import get_inline_keyboard_author
 from core.utils.admin_statesform import StepsForm
 from aiogram.types import Message, CallbackQuery
 
@@ -10,7 +11,7 @@ async def get_material(message: Message, state: FSMContext):
     await state.set_state(StepsForm.GET_CATEGORY)
     
 async def get_category(message: Message, state: FSMContext):
-    await message.answer(f'Категория материала:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard())
+    await message.answer(f'Категория материала:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_CATEGORY)
     await state.update_data(category=message.text)
 
@@ -24,7 +25,7 @@ async def check_category(call: CallbackQuery, state: FSMContext):
         await state.set_state(StepsForm.GET_CATEGORY)
 
 async def get_description(message: Message, state: FSMContext):
-    await message.answer(f'Короткое описание материала:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard())
+    await message.answer(f'Короткое описание материала:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_DESCRIPTION)
     await state.update_data(description=message.text)
 
@@ -38,7 +39,7 @@ async def check_description(call: CallbackQuery, state: FSMContext):
         await state.set_state(StepsForm.GET_DESCRIPTION)
 
 async def get_link(message: Message, state: FSMContext):
-    await message.answer(f'Ссылка на материал:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard())
+    await message.answer(f'Ссылка на материал:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_LINK)
     await state.update_data(link=message.text)
 
@@ -52,25 +53,32 @@ async def check_link(call: CallbackQuery, state: FSMContext):
         await state.set_state(StepsForm.GET_LINK)    
 
 async def get_name(message: Message, state: FSMContext):
-    await message.answer(f'Название материала:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard())
+    await message.answer(f'Название материала:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_NAME)
     await state.update_data(name=message.text)
 
 async def check_name(call: CallbackQuery, state: FSMContext):
     await call.answer()
     if (call.data.endswith('yes')):
-       await call.message.answer("Отлично, Вы подтвердили. Введите автора материала в формате Ф. И. Отчество")
+       await call.message.answer("Отлично, Вы подтвердил")
+       await call.message.answer(f'Выберите формат ввода автора:\r\n{call.message.text}\r\n',reply_markup=get_inline_keyboard_author())
        await state.set_state(StepsForm.GET_AUTHOR)
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
         await state.set_state(StepsForm.GET_NAME)  
 
-async def get_author(message: Message, state: FSMContext):
+async def get_author(call: CallbackQuery, state: FSMContext):
     # сделать так штоб можно было выбрать ввод фио или никнейм
-    await message.answer(f'Автор материала:\r\n{message.text}\r\n',reply_markup=get_inline_keyboard())
+    await call.answer()
+    if (call.data.endswith('fio')):
+       await call.message.answer("Отлично, Вы выбрали ФИОб введите автора")  
+    
+    if (call.data.endswith('nickname')):
+        await call.message.answer("Отлично, Вы выбрали никнейм, введите автора")
+    
+    await state.update_data(format=call.message.text)
+    await call.message.answer(f'Автор материала:\r\n{call.message.text}\r\n',reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_AUTHOR)
-    await state.update_data(author=message.text)
-
 
 async def check_author(call: CallbackQuery, state: FSMContext):
     await call.answer()
@@ -78,8 +86,7 @@ async def check_author(call: CallbackQuery, state: FSMContext):
        await call.message.answer("Отлично, Вы подтвердили Автора")
        await get_all_validate(call.message, state)
        await state.set_state(StepsForm.GET_ALL)  
-       
-
+    
     if (call.data.endswith('no')):
         await call.message.answer("Введите повторно")
         await state.set_state(StepsForm.GET_AUTHOR)  
@@ -92,6 +99,7 @@ async def get_all_validate(message: Message, state: FSMContext):
     link = context_data.get('link')
     name = context_data.get('name')
     author = context_data.get('author')
+    format = context_data.get('format')
     await state.set_state(StepsForm.VALIDATE_MATERIAL)
     # функция Жени, которая говорит введенные данные норм или нет
     await message.answer(f'данные типо провалидированы') 

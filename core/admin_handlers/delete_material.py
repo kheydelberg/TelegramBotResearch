@@ -1,6 +1,6 @@
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from core.keyboards.admin_inline_keyboard import get_inline_keyboard
+from core.keyboards.admin_inline_keyboard_yes_no import get_inline_keyboard_yes_no
 from core.utils.admin_statesform import StepsForm
 from aiogram.types import Message, CallbackQuery
 
@@ -12,7 +12,7 @@ async def show_db_to_delete(message: Message, state: FSMContext):
     await state.set_state(StepsForm.GET_ID)
     
 async def get_id(message: Message, state: FSMContext):
-    await message.answer(f'ID:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard())
+    await message.answer(f'ID:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_ID)
     await state.update_data(id=message.text)
 

@@ -1,6 +1,6 @@
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from core.keyboards.admin_inline_keyboard import get_inline_keyboard
+from core.keyboards.admin_inline_keyboard_yes_no import get_inline_keyboard_yes_no
 from core.utils.admin_statesform import StepsForm
 from aiogram.types import Message, CallbackQuery
 
@@ -10,7 +10,7 @@ async def start_show_feedbacks(message: Message, state: FSMContext):
     await state.set_state(StepsForm.GET_NUMBER_FB)
     
 async def get_number_str(message: Message, state: FSMContext):
-    await message.answer(f'Количество фидбеков для просмотра:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard())
+    await message.answer(f'Количество фидбеков для просмотра:\r\n{message.text}\r\n', reply_markup=get_inline_keyboard_yes_no())
     await state.set_state(StepsForm.CHECK_NUMBER_FB)
     await state.update_data(number=message.text)
 

@@ -2,11 +2,14 @@ from aiogram import Bot
 from aiogram.types import BotCommand, BotCommandScopeAllChatAdministrators
 
 async def set_admin_commands(bot: Bot):
-    commands = [
-        BotCommand(
-        command='start_admin',
-        description='Начало работы',
-        ),
+  commands = [
+      BotCommand(
+          command='start_admin',
+          description='Начало работы',
+          )
+          ]
+  await bot.set_my_commands(commands, BotCommandScopeAllChatAdministrators()) # скоуп может быть разным только для админов в том числе
+"""
         BotCommand(
             command='help_admin',
             description='Помощь'
@@ -46,6 +49,5 @@ async def set_admin_commands(bot: Bot):
          BotCommand (
            command = 'load_backup',
            description = 'Загрузить бэкап БД'
-        ),
-    ]
-    await bot.set_my_commands(commands, BotCommandScopeAllChatAdministrators()) # скоуп может быть разным только для админов в том числе
+        )
+"""
