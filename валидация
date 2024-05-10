@@ -64,16 +64,21 @@ def validate_authors(author):
     return True
 
 
-def validate_category(author):
-    pass
+def validate_category(category):
+    cat= ['ТВиМС','Матан','ДУ','ЛинАл','Программирование','C++','C#','Python','АлГем','Java']
+    if category in cat:
+        return True
+    return False
 
 
-def validate_name(author):
-    pass
 
 
-def validate_name(author):
-    pass
+def validate_name(name):
+    if is_russian_or_latin(name[0]):
+        return True
+    return False
+
+
 
 
 def validate_link(url):
@@ -90,7 +95,3 @@ def validate_link(url):
 
 def validate_addition(lesson, discipline, author, link):
     pass
-
-
-author = 'И.В. Асташова; О. Прокопенко'
-print(validate_authors(author))
