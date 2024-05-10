@@ -16,6 +16,11 @@ def validate_text(last_name):
   # Фамилия валидная
   return True
 
+def validate_nick(nick):
+    if nick:
+        return True
+    return False
+
 
 
 
@@ -34,10 +39,10 @@ def is_russian_or_latin(letter):
     return False
 
 
-def validate_authors(author):
+def validate_authors1(author):
     s = author.split(';')
     s= [x.strip() for x in s]
-    print(s)
+
     for i in s:
         if i.count('.') > 2:
             return False
@@ -45,10 +50,10 @@ def validate_authors(author):
             if is_russian_or_latin(i[0]) and i[1] == '.' and is_russian_or_latin(i[2]) and i[3] == '.' and i[4]==" ":
                 pass
             else:
-                print('Errorrrrrrrrrrrrrrr',i)
+
                 return False
             if not (validate_text(i[5:])):
-                print('Error', i)
+
                 return False
 
         elif i.count('.') == 1:
@@ -93,5 +98,33 @@ def validate_link(url):
     return True
 
 
-def validate_addition(lesson, discipline, author, link):
-    pass
+def validate_main(name, category,description, author, link,format):
+    attention=''
+    if format=='fio':
+        if validate_authors1(author) == False:
+            attention+=' Неправильный автор.'
+    elif format=='nickname':
+        if validate_nick(author)== False:
+            attention += ' Неправильный ник.'
+    else:
+        attention+= ' Неправильный формат автора.'
+    if validate_link(link)==False:
+        attention += ' Неправильная ссылка.'
+    if validate_name(name)==False:
+        attention += ' Неправильное название.'
+    if validate_category(category)==False:
+        attention += ' Неправильная категория.'
+    if validate_nick(description) == False:
+        attention += ' Пустое описание (при отсутствии поставь"-").'
+    if attention:
+        attention =attention[:-1].replace('.',',')+'.'
+        return attention[1:]
+    else:
+        return True
+print(validate_main('Сборник','ДnУ','задачи','И., Прор','https://web.telegram.org/a/#-4124340473','fio'))
+
+
+
+
+author = ''
+print(validate_nick(author))
