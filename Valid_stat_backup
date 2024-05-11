@@ -1,0 +1,16 @@
+async def validate_number_stat(message: Message, state: FSMContext):
+    data = await state.get_data()
+    number = data.get('number') #или не 'number' 
+
+    try:
+        number = int(number)  # Пытаемся преобразовать количество строк в целое число
+    except ValueError:
+        await message.answer("Введите корректное число строк")
+        return
+
+    if number <= 0:
+        await message.answer("Введите положительное число строк")
+        return
+
+    # Здесь можно добавить проверку существования номера в базе данных
+    
