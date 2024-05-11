@@ -79,7 +79,8 @@ def validate_category(category):
 
 
 def validate_name(name):
-    if is_russian_or_latin(name[0]):
+    if name:
+      if is_russian_or_latin(name[0]):
         return True
     return False
 
