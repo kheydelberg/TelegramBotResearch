@@ -122,10 +122,4 @@ def validate_main(name, category,description, author, link,format):
         return attention[1:]
     else:
         return True
-print(validate_main('Сборник','ДnУ','задачи','И., Прор','https://web.telegram.org/a/#-4124340473','fio'))
 
-
-
-
-author = ''
-print(validate_nick(author))
