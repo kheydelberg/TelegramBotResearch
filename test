@@ -1,0 +1,16 @@
+from valid import *
+def test_positive_cases():
+    assert validate_main("Математика для всех", "Матан", "Описание курса", "И.И. Иванов", "http://example.com", "fio") == True
+    assert validate_main("Программирование на Python", "Python", "Подробное описание", "John Smith", "https://example.com", "nickname") == True
+
+# Негативные сценарии
+def test_negative_cases():
+    assert validate_main("", "Матан", "Описание курса", "И.И. Иванов", "http://example.com", "fio") == "Неправильное название."
+    assert validate_main("Математика для всех", "Математика", "Описание курса", "И.И. Иванов", "http://example.com", "fio") == "Неправильная категория."
+    assert validate_main("Математика для всех", "Матан", "Описание курса", "Иванов И.И.", "http://example.com", "fio") == "Неправильный автор."
+    assert validate_main("Математика для всех", "Матан", "Описание курса", "", "http://example.com", "fio") == "Неправильный автор."
+    assert validate_main("Математика для всех", "Матан", "Описание курса", "И.И. Иванов", "", "fio") == "Неправильная ссылка."
+
+
+print(test_positive_cases())
+print(test_negative_cases())
