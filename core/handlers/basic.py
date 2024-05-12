@@ -7,6 +7,7 @@ from lexicon.lexicon import LEXICON
 
 async def get_start(message: Message, bot: Bot):
     await message.answer(LEXICON[message.text],reply_markup=get_Math_Prog())
+    return True
 
 
 async def get_help(message: Message, bot: Bot):
