@@ -1,7 +1,11 @@
-from core.handlers.basic import get_help
+from core.handlers.basic import get_choose_subject, get_help, get_start
 from core.keyboards.reply import create_pagination_keyboard, do_you_like, get_Math_Prog, get_category_of_math, get_category_of_prog
 from aiogram.types import InlineKeyboardMarkup
 import pytest
+from unittest.mock import AsyncMock, MagicMock
+from lexicon.lexicon import LEXICON
+from aiogram import Bot
+from aiogram.types import Message
 
 
 def test_get_Math_Prog():
@@ -162,6 +166,47 @@ def test_do_you_like():
     print("do_you_like passed the test")
 
 
+
+
+@pytest.mark.asyncio
+async def test_get_start():
+    message = Message(message_id=1, date="2024-05-20T12:00:00", chat = {
+    'id': 123456789,
+    'type': 'private',
+    'username': 'example_user',
+    'first_name': 'John',
+    'last_name': 'Doe'
+},text="start")
+    bot = Bot()
+
+    bot.answer = AsyncMock()
+    await get_start(message, bot)
+
+    bot.answer.assert_called_once_with(LEXICON[message.text], reply_markup=get_Math_Prog())
+'''
+@pytest.mark.asyncio
+async def test_get_help():
+    message = Message(message_id=1, date="2024-05-20", chat="user",text='help')
+    bot = Bot()
+
+    bot.answer = AsyncMock()
+    await get_help(message, bot)
+
+    bot.answer.assert_called_once_with(LEXICON[message.text])
+
+@pytest.mark.asyncio
+async def test_get_choose_subject():
+    message = Message(message_id=1, date="2024-05-20", chat="user",text='subject')
+
+    bot = Bot()
+
+    bot.answer = AsyncMock()
+    await get_choose_subject(message, bot)
+
+    bot.answer.assert_called_once_with('Давай выберем предмет!', reply_markup=get_Math_Prog())
+
+
+'''
 test_get_Math_Prog()
 test_get_category_of_math()
 test_get_category_of_prog()
