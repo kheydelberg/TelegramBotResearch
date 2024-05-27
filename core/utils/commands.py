@@ -17,5 +17,9 @@ async def set_commands(bot: Bot):
             description='Cправка по работе бота'
         ),
         BotCommand(command='test', description='Тестирование')
+        BotCommand(
+            command='test_pagination',
+            description='проверка пагинации'
+        )
     ]
     await bot.set_my_commands(commands, BotCommandScopeDefault())
