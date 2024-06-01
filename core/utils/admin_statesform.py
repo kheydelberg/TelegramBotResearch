@@ -46,3 +46,5 @@ class StepsForm(StatesGroup):
     CHECK_ID_FB = State()
     VALIDATE_ID_FB = State()
     CHANGE_STATUS_FB = State()
+
+    EXTRACT = State()

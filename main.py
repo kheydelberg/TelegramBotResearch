@@ -1,3 +1,4 @@
+"""
 import codecs
 from core.utils.dbconnect import Request
 from aiogram import Bot, Dispatcher
@@ -118,3 +119,4 @@ async def start():
 
 if __name__ == "__main__":
     asyncio.run(start())
+    """

@@ -1,9 +1,10 @@
 from aiogram import Bot, Dispatcher
+from aiogram.types import Message
 import asyncio  
 from aiogram.filters import Command 
 import logging
 from core.admin_handlers.basic import get_start
-from core.settings import Setting
+from core.settings import settings
 from core.utils.admin_commands import set_admin_commands
 from core.admin_handlers import add_material
 from core.admin_handlers import delete_material
@@ -16,19 +17,85 @@ from core.admin_handlers import view_statistic
 from core.admin_handlers import changing_feedback_status
 from core.utils.admin_statesform import StepsForm
 from core.admin_handlers import admin_panel
-
+from aiogram.fsm.context import FSMContext
+from core.keyboards.admin_inline_keyboard_yes_no import get_inline_keyboard_yes_no
+from aiogram import Bot
+from aiogram.types import CallbackQuery
+from aiogram import F
+# чат гпт
+from openai import OpenAI
+import aiohttp
+OPENAI_API_KEY = ''
 
 
 # Функция для запуска бота
 async def start_bot(bot: Bot):
     await set_admin_commands(bot)
-    await bot.send_message(Setting.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
+    await bot.send_message(settings.bots.admin_id, text='Бот запущен')  # Отправка сообщения о запуске бота
 
 
 # Функция для остановки бота
 async def stop_bot(bot: Bot):
-    await bot.send_message(Setting.bots.admin_id, text='Бот остановлен')  # Отправка сообщения об остановке бота
+    await bot.send_message(settings.bots.admin_id, text='Бот остановлен')  # Отправка сообщения об остановке бота
 
+async def start_extract(message: Message, state: FSMContext):
+     await message.answer(f'{message.from_user.first_name}, введите дисциплину или автора для поиска материала')
+     await state.set_state(StepsForm.EXTRACT)
+     
+async def handle(message: Message, state: FSMContext):
+    print(message.text)
+    await message.answer(f"Ваш запрос: {message.text}?",reply_markup=get_inline_keyboard_yes_no())
+    # info = await extract_info(message.text)
+    # await message.reply(info)
+    # await state.clear()
+
+async def agreed(call: CallbackQuery, bot: Bot, state: FSMContext):
+    answer = f'запрос подтвержден!'
+    await call.message.answer(answer)
+    # info = await extract_info(call.message.text)
+    # await call.message.reply(info)
+    await state.clear()
+    await call.answer()
+
+async def not_agreed(call: CallbackQuery, bot: Bot, state: FSMContext):
+    answer = f'запрос не подтвержден!'
+    await call.message.answer(answer)
+    await call.answer()
+    await start_extract(call.message, state)
+   
+
+# Обработчик текстовых сообщений
+async def extract_info(user_input: str):
+    task_gpt = f""" Из '{user_input}' выдели автора и дисциплину. 
+    Дисциплина может быть задана одним их следующих выражений: 
+    'ТВиМС','Матан','ДУ','ЛинАл','Программирование C++','Программирование C#', ' Программирование Python','АлГем','Программирование Java'. 
+    У автора может быть или фамилия или фамилия и инициалы через точку. 
+    Ответ выведи в формате дисциплина:... , автор:... """
+    request_gpt = {"model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": task_gpt}]}
+
+    async with aiohttp.ClientSession() as session:
+        headers = { "Authorization": f"Bearer {OPENAI_API_KEY}", 
+                   "Content-Type": "application/json" } 
+        async with session.post('https://api.proxyapi.ru/openai/v1/chat/completions', json=request_gpt, headers=headers) as response: 
+            if response.status == 200: 
+                response_data = await response.json() 
+                answer = response_data['choices'][0]['message']['content'].strip() 
+                return answer 
+            else: 
+                error_message = await response.text()
+                logging.error(f"Error {response.status} : {error_message}")
+                return f"Произошла ошибка при обращении к API OpenAI. {error_message}"
+            
+async def start_extract(message: Message, state: FSMContext):
+     await message.answer(f'введите дисциплину или автора для поиска материала')
+     await state.set_state(StepsForm.EXTRACT)
+     
+async def handle(message: Message, state: FSMContext):
+    print(message.text)
+    # await message.answer(f"Ваш запрос: {message.text}?",reply_markup=get_inline_keyboard_yes_no())
+    info = await extract_info(message.text)
+    await message.reply(info, reply_markup=get_inline_keyboard_yes_no())
+    await state.clear()
 
 # Основная функция для запуска бота
 async def start():
@@ -38,7 +105,7 @@ async def start():
                                "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
                         )
     
-    bot = Bot(token=Setting.bots.bot_token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
+    bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')  # Создание экземпляра класса Bot с указанием токена и режима разметки HTML
     
     dp = Dispatcher()  # Создание экземпляра класса Dispatcher
 
@@ -47,11 +114,9 @@ async def start():
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
-<<<<<<< HEAD
-=======
-    
+    dp.message.register(start_extract, Command(commands='keyboard_input')) # ввод через клавиатуру
+    dp.message.register(handle, StepsForm.EXTRACT)
 
->>>>>>> 261410de3e741b9cbfaa28f18ef958f5cb2e439c
     dp.message.register(add_material.get_category, StepsForm.GET_CATEGORY)
     dp.message.register(add_material.get_description, StepsForm.GET_DESCRIPTION)
     dp.message.register(add_material.get_link, StepsForm.GET_LINK)
@@ -67,6 +132,8 @@ async def start():
     dp.callback_query.register(delete_material.check_id, StepsForm.CHECK_ID)
     dp.message.register(delete_material.validate_id_delete_material, StepsForm.VALIDATE_ID)
 
+    dp.callback_query.register(agreed, F.data=="yes")
+    dp.callback_query.register(not_agreed, F.data=="no")
     dp.callback_query.register(add_material.check_category, StepsForm.CHECK_CATEGORY)
     dp.callback_query.register(add_material.check_description, StepsForm.CHECK_DESCRIPTION)
     dp.callback_query.register(add_material.check_link, StepsForm.CHECK_LINK)
@@ -108,7 +175,6 @@ async def start():
 
     dp.callback_query.register(admin_panel.admin_panel)
 
-    dp.callback_query.register(admin_panel.admin_panel)
 
     try:
         await dp.start_polling(bot)  # Запуск бота с использованием long polling
