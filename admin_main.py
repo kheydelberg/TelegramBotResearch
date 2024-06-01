@@ -114,11 +114,8 @@ async def start():
     dp.startup.register(start_bot)  # Регистрация функции запуска бота
     dp.shutdown.register(stop_bot)  # Регистрация функции остановки бота
 
-<<<<<<< HEAD
     dp.message.register(start_extract, Command(commands='keyboard_input')) # ввод через клавиатуру
     dp.message.register(handle, StepsForm.EXTRACT)
-=======
->>>>>>> f95695dbbf17c55c08e2d0208269bae43d2cd79d
 
     dp.message.register(add_material.get_category, StepsForm.GET_CATEGORY)
     dp.message.register(add_material.get_description, StepsForm.GET_DESCRIPTION)
