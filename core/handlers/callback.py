@@ -3,24 +3,48 @@ from aiogram import Bot
 from aiogram.types import Message
 from aiogram.types import CallbackQuery
 from core.handlers.basic import get_books_list
-from core.keyboards.reply import create_pagination_keyboard, do_you_like, get_Math_Prog, get_category_of_math, get_category_of_prog, pagination_keyboard
+from core.keyboards.reply import back_to_choice, create_pagination_keyboard, do_you_like, get_Math_Prog, get_category_of_math, get_category_of_prog, pagination_keyboard
 from lexicon.lexicon import LEXICON, LEXICON_FOR_FUNC, LEXICON_FOR_SUBJECTS
-
+from aiogram.fsm.context import FSMContext
 from core.utils.dbconnect import Request
-
+from core.state.user import UserState
 from data_base import books_database
 from config import decrement_current_page, get_current_page, get_books_per_page, increment_current_page
 
 
+async def like(callback_query: CallbackQuery, state: FSMContext, request: Request):
+    context_data = await state.get_data()
+    print(context_data)
+    link_id = context_data.get("lines")[context_data.get("picked_id")]["idLinks"]
+    print(link_id)
+    await request.add_like(link_id)
+    await callback_query.message.answer("Вы лайкнули!\n")
+    await callback_query.answer()
+    await state.clear()
+     
+
+async def notlike(callback_query: CallbackQuery,state: FSMContext, request: Request):
+    await callback_query.message.answer("Жаль\n")
+    await callback_query.answer()
+    await state.clear()
+
+async def get_choose_subject2(callback_query: CallbackQuery, bot: Bot):
+    await callback_query.answer()
+    await callback_query.message.answer('Давай выберем предмет!', reply_markup=get_Math_Prog())
 
 async def category_search(category: str, request: Request):
     return await request.category_search(category)
 
 
-async def book_callback_handler(callback_query: CallbackQuery):
-    book_id = int(callback_query.data.split("_")[1])
-    await callback_query.message.answer(f"Вы выбрали: {books_database[book_id]}")
+async def book_callback_handler(callback_query: CallbackQuery, state: FSMContext):
+    book_id = int(callback_query.data.split("_")[1]) - 1
+    contex_data = await state.get_data()
+    data = contex_data.get('lines')
+    await state.update_data(picked_id = book_id)    
+
+    await callback_query.message.answer(f"Вы выбрали: {data[book_id]['name']}\n\n{data[book_id]['link']}", reply_markup=back_to_choice())
     await callback_query.answer()
+    await callback_query.message.answer(LEXICON['text_likes'], reply_markup=do_you_like())
 
 
 async def prev_page_callback_handler(callback_query: CallbackQuery):
@@ -45,9 +69,10 @@ async def next_page_callback_handler(callback_query: CallbackQuery):
 
 
 # Выбор математики
-async def get_math(call: CallbackQuery):
+async def get_math(call: CallbackQuery, state: FSMContext):
     await call.answer()
     await call.message.answer(LEXICON_FOR_SUBJECTS[call.data], reply_markup=get_category_of_math())
+    await state.set_state(UserState.PICK_LINK)
 
 # Назад к списку предмета
 async def get_back_math(call: CallbackQuery):
@@ -55,19 +80,21 @@ async def get_back_math(call: CallbackQuery):
     await call.message.answer(LEXICON_FOR_SUBJECTS[call.data], reply_markup=get_Math_Prog())
 
 # Выбор подкатегории
-async def get_matan(call: CallbackQuery, request: Request):
+async def get_matan(call: CallbackQuery, request: Request, state: FSMContext):
     await call.answer()
     data = await category_search(category=LEXICON_FOR_FUNC[call.data], request=request)
     print(data)
+    await state.update_data(lines = data)
     text = ''
     for i in range(len(data)):
         text += f"{i+1}. {data[i]['name']}, {data[i]['authors']}\n"
     await call.message.answer(text,
-                              reply_markup=pagination_keyboard())
+                              reply_markup=pagination_keyboard(len(data)))
+    state.set_state(UserState.NOT_PICK_LINK)
     # await call.message.answer(LEXICON['text_likes'], reply_markup=do_you_like())
 
 
-async def get_linal(call: CallbackQuery, request: Request):
+async def get_linal(call: CallbackQuery, request: Request, state: FSMContext):
     await call.answer()
     data = await category_search(category=LEXICON_FOR_FUNC[call.data], request=request)
     print(data)

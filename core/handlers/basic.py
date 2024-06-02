@@ -25,7 +25,9 @@ async def get_help(message: Message, bot: Bot):
 
 
 async def get_choose_subject(message: Message, bot: Bot):
+    print("HAHA\n\n")
     await message.answer('Давай выберем предмет!', reply_markup=get_Math_Prog())
+     
 
 
 async def test(message: Message, bot: Bot, request: Request):

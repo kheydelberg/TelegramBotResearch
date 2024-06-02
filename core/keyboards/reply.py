@@ -53,6 +53,13 @@ def create_pagination_keyboard(*buttons: str) -> InlineKeyboardMarkup:
 
     return keyboard_builder.as_markup()
 
+
+def back_to_choice():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Назад к выбору', callback_data='back_to_choice')
+
+    return keyboard_builder.as_markup()
+
 def do_you_like():
     keyboard_builder= InlineKeyboardBuilder()
     keyboard_builder.button(text= 'Да👌', callback_data='like')
@@ -64,52 +71,14 @@ def do_you_like():
 
 
 
-# Глобальные переменные для отслеживания текущей страницы и максимального количества страниц
- # Количество книг на одной странице
-
-# # Функция для создания клавиатуры пагинации
-# def pagination_keyboard() -> InlineKeyboardMarkup:
-#     global current_page, books_per_page
-#     max_page = (len(books_database) - 1) // books_per_page + 1  # Вычисляем количество страниц
-#     start_book = (current_page - 1) * books_per_page + 1
-#     end_book = min(current_page * books_per_page, len(books_database))
-
-#     keyboard = InlineKeyboardBuilder()
-#     if current_page > 1:
-#         keyboard.button(text="<", callback_data="prev_page")
-#     for i in range(start_book, end_book + 1):
-#         keyboard.button(text=str(i), callback_data=str(i))
-#     if current_page < max_page:
-#         keyboard.button(text=">", callback_data="next_page")
-
-#     return keyboard.as_markup()
 
 
-# def pagination_keyboard() -> InlineKeyboardMarkup:
-#     global current_page, books_per_page
-#     max_page = (len(books_database) - 1) // books_per_page + 1  # Вычисляем количество страниц
-#     start_book = (current_page - 1) * books_per_page + 1
-#     end_book = min(current_page * books_per_page, len(books_database))
-
-#     keyboard = InlineKeyboardBuilder()
-#     # if current_page >= 1:
-#     keyboard.button(text="<", callback_data="prev_page")
-#     for i in range(start_book, end_book + 1):
-#         keyboard.button(text=str(i), callback_data=f"book_{i}")
-#     if current_page < max_page:
-#         keyboard.button(text=">", callback_data="next_page")
-
-#     keyboard.adjust(5)
-#     return keyboard.as_markup()
-
-
-
-def pagination_keyboard() -> InlineKeyboardBuilder:
+def pagination_keyboard(size: int) -> InlineKeyboardBuilder:
     current_page = get_current_page()
     books_per_page = get_books_per_page()
-    max_page = (len(books_database) - 1) // books_per_page + 1  # Вычисляем количество страниц
+    max_page = (size - 1) // books_per_page + 1  # Вычисляем количество страниц
     start_book = (current_page - 1) * books_per_page + 1
-    end_book = min(current_page * books_per_page, len(books_database))
+    end_book = min(current_page * books_per_page, size)
 
     keyboard = InlineKeyboardBuilder()
 
