@@ -7,12 +7,21 @@ from aiogram import Bot, Dispatcher, types
 from config import get_current_page, get_books_per_page
 
 
+
+def get_inline_keyboard_yes_no():
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text='Да', callback_data='yes')
+    keyboard_builder.button(text='Нет', callback_data='no')
+    keyboard_builder.adjust(2)
+    return keyboard_builder.as_markup()
+
 def get_Math_Prog():
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(text='Высшая математика', callback_data='math')
     keyboard_builder.button(text='Программирование', callback_data='prog')
+    keyboard_builder.button(text='Свободный запрос', callback_data='gpt_request')
 
-    keyboard_builder.adjust(2)
+    keyboard_builder.adjust(2, 1)
 
     return keyboard_builder.as_markup()
 

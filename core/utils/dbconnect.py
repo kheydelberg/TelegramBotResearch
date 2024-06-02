@@ -30,6 +30,12 @@ class Request:
             await cur.execute(query)
             return await cur.fetchall()
 
+    async def category_author_search(self, category: str, author: str):
+        async with self.connector.cursor(aiomysql.DictCursor) as cur:
+            query = f"SELECT idLinks, name, description, link, authors FROM Links WHERE categories LIKE '%{category}%' AND authors LIKE '%{author}%' ORDER BY likes desc"
+            await cur.execute(query)
+            return await cur.fetchall()
+
     async def create_feedback(self, idTelegram, Type: str, Text: str):
         async with self.connector.cursor(aiomysql.DictCursor) as cur:
             query = f"INSERT INTO feedback (idTelegram, Type, Text, IsDone)" \

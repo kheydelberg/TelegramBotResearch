@@ -12,6 +12,37 @@ from data_base import books_database
 from config import decrement_current_page, get_current_page, get_books_per_page, increment_current_page
 
 
+async def agreed(call: CallbackQuery, bot: Bot, state: FSMContext,  request: Request):
+    info = await state.get_data()
+    print(info)   
+
+    data = await request.category_author_search(info.get("gpt_category"), info.get("gpt_author"))
+    print(data)
+    await state.update_data(lines = data)
+    text = ''
+    for i in range(len(data)):
+        text += f"{i+1}. {data[i]['name']}, {data[i]['authors']}\n"
+    if (text == ''):
+        await call.message.answer("Ничего не найдено", reply_markup=back_to_choice())
+    else:
+        await call.message.answer(text,
+                              reply_markup=pagination_keyboard(len(data)))
+
+    await call.answer()
+    await call.message.delete()
+
+async def not_agreed(call: CallbackQuery, bot: Bot, state: FSMContext):
+    await call.answer()
+    await call.message.delete()
+    await start_extract(call, state)
+    
+            
+async def start_extract(call: CallbackQuery, state: FSMContext):
+     await call.message.answer(f'Введите запрос на поиск материала в свободной форме:')
+     await state.set_state(UserState.GET_GPT_REQUEST)
+     await call.answer()
+
+
 async def like(callback_query: CallbackQuery, state: FSMContext, request: Request):
     context_data = await state.get_data()
     print(context_data)
@@ -20,13 +51,13 @@ async def like(callback_query: CallbackQuery, state: FSMContext, request: Reques
     await request.add_like(link_id)
     await callback_query.message.answer("Вы лайкнули!\n")
     await callback_query.answer()
-    await state.clear()
+    await callback_query.message.delete()
      
 
 async def notlike(callback_query: CallbackQuery,state: FSMContext, request: Request):
-    await callback_query.message.answer("Жаль\n")
+    await callback_query.message.answer("Жаль, будем стараться лучше\n")
     await callback_query.answer()
-    await state.clear()
+    await callback_query.message.delete()
 
 async def get_choose_subject2(callback_query: CallbackQuery, bot: Bot):
     await callback_query.answer()
@@ -40,11 +71,13 @@ async def book_callback_handler(callback_query: CallbackQuery, state: FSMContext
     book_id = int(callback_query.data.split("_")[1]) - 1
     contex_data = await state.get_data()
     data = contex_data.get('lines')
+    # picked = data[book_id]["idLinks"]
     await state.update_data(picked_id = book_id)    
 
     await callback_query.message.answer(f"Вы выбрали: {data[book_id]['name']}\n\n{data[book_id]['link']}", reply_markup=back_to_choice())
     await callback_query.answer()
     await callback_query.message.answer(LEXICON['text_likes'], reply_markup=do_you_like())
+    await callback_query.message.delete()
 
 
 async def prev_page_callback_handler(callback_query: CallbackQuery):
