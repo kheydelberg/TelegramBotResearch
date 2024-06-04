@@ -1,10 +1,10 @@
 import codecs
 
-from aiogram.types import User
+from core.keyboards.reply import get_inline_keyboard_yes_no
 from core.utils.dbconnect import Request
 from typing import Text
 from aiogram import Bot, Dispatcher
-from core.handlers.basic import get_choose_subject, get_help, get_start, pagination
+from core.handlers.basic import cancel, get_choose_subject, get_help, get_start, pagination
 import asyncio
 import logging
 from core.state.user import UserState
@@ -14,7 +14,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler_di import ContextSchedulerDecorator
 
-from core.handlers.basic import get_start, test
+from core.handlers.basic import get_start, test, handle
 from core.settings import Setting
 from aiogram.filters import Command, CommandStart
 
@@ -24,13 +24,19 @@ from core.utils.commands import set_commands
 from aiogram.filters import Command
 from core.handlers.callback import book_callback_handler, get_C_plusplus, get_C_sharp, get_back_math, get_back_prog, get_choose_subject2, get_diffur, like, next_page_callback_handler, notlike, prev_page_callback_handler
 from core.handlers.callback import get_discra, get_git, get_java, get_linal, get_matan, get_python, get_twims
-from core.handlers.callback import get_math, get_prog
+from core.handlers.callback import get_math, get_prog, agreed, not_agreed, start_extract
 
 from core.middlewares.dbmiddleware import DBSession
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from core.handlers import apsched
 from datetime import datetime, timedelta
 
+
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery
+from aiogram.types import Message
+
+   
 
 
 async def start_bot(bot: Bot):
@@ -120,6 +126,14 @@ async def start():
     dp.update.middleware.register(DBSession(pool_connect))
     dp.message.middleware.register(apsched.statistics_middleware())
     
+    
+    dp.message.register(handle, UserState.GET_GPT_REQUEST)
+    dp.message.register(cancel, Command(commands='cancel'))
+    dp.message.register(get_choose_subject, Command(commands='subject'))
+    dp.message.register(get_help, Command(commands='help'))
+    dp.message.register(get_start, Command(commands=['start', 'run']))
+
+
     dp.callback_query.register(get_prog, F.data == 'prog')
     dp.callback_query.register(get_math, F.data == 'math')
     
@@ -136,6 +150,9 @@ async def start():
     # dp.callback_query.register(get_java, F.data == 'java')
     dp.callback_query.register(get_back_math, F.data == 'back_math')
     dp.callback_query.register(get_back_prog, F.data == 'back_prog')
+    dp.callback_query.register(start_extract, F.data == 'gpt_request')
+    dp.callback_query.register(agreed, F.data == 'yes')
+    dp.callback_query.register(not_agreed, F.data == 'no')
 
     dp.callback_query.register(book_callback_handler, F.data.startswith("book_"))
     dp.callback_query.register(prev_page_callback_handler, F.data == 'prev_page')
@@ -145,16 +162,11 @@ async def start():
     dp.callback_query.register(notlike, F.data == 'not_like')
     dp.callback_query.register(get_matan, UserState.PICK_LINK)
     
-
-    dp.message.register(pagination, Command(commands='test_pagination'))
-    dp.message.register(get_choose_subject, Command(commands='subject'))
-    dp.message.register(get_help, Command(commands='help'))
-    dp.message.register(get_start, Command(commands=['start', 'run']))
+    
 
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
 
-    dp.message.register(test, Command(commands='test'))
     
     try:
         await dp.start_polling(bot)
