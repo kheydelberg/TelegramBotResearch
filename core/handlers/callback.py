@@ -15,8 +15,12 @@ from config import decrement_current_page, get_current_page, get_books_per_page,
 async def agreed(call: CallbackQuery, bot: Bot, state: FSMContext,  request: Request):
     info = await state.get_data()
     print(info)   
+    cat = info.get("gpt_category")
+    author = info.get("gpt_author")
+    if (author == "отсутствует"): author = ""
+    if (cat == "отсутствует"): cat = ""
 
-    data = await request.category_author_search(info.get("gpt_category"), info.get("gpt_author"))
+    data = await request.category_author_search(cat, author)
     print(data)
     await state.update_data(lines = data)
     text = ''
